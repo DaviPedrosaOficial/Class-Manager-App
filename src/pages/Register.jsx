@@ -1,23 +1,46 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function Register() {
     const navigate = useNavigate();
 
-    function handleRegister() {
-        navigate("/dashboard");
+    const [nome, setNome] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    function handleRegister(e) {
+        e.preventDefault();
+
+        if (nome && email && password && confirmPassword) {
+            if (password === confirmPassword) {
+                navigate("/");
+            } else {
+                alert("As senhas não coincidem. Por favor, tente novamente.");
+            }
+        } else {
+            alert("Preencha todos os campos para continuar.");
+        }
+
     }
 
     return (
         <div>
             <h1>Register</h1>
 
-            <input className="inputRegister" type="text" placeholder="Nome Completo" />
-            <input className="inputRegister" type="text" placeholder="E-mail" />
-            <input className="inputRegister" type="password" placeholder="Password" />
+            <form action="/register" onSubmit={handleRegister}>
 
-            <button className="btnRegister" onClick={handleRegister}>
-                Register
-            </button>
+                <input className="inputRegister" type="text" placeholder="Nome Completo" value={nome} onChange={(e) => setNome(e.target.value)} />
+                <input className="inputRegister" type="text" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <input className="inputRegister" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input className="inputRegister" type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+
+                <button className="btnRegister" type="submit">
+                    Register
+                </button>
+            </form>
+
+
         </div>
     )
 }
