@@ -1,8 +1,10 @@
 import User from "../models/User.js";
+import bcrypt from "bcrypt";
 
 export const registerUser = async (req, res) => {
     try {
         const { nome, email, password } = req.body;
+        
 
         if (!nome || !email || !password) {
             return res.status(400).json({ message: "Preencha todos os campos para continuar." });
@@ -14,7 +16,9 @@ export const registerUser = async (req, res) => {
             return res.status(400).json({ message: "E-mail já cadastrado. Por favor, tente outro." });
         }
 
-        const newUser = new User({nome, email, password});
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        const newUser = new User({nome, email, password: hashedPassword});
         await newUser.save();
 
         res.status(201).json({ message: "Usuário registrado com sucesso!" });
