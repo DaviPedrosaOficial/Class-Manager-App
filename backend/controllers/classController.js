@@ -24,8 +24,24 @@ export const createClass = async (req, res) => {
         });
 
         res.status(201).json(newClass);
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Erro ao criar turma" });
+    }
+};
+
+export const getClassById = async (req, res) => {
+    try {
+        const classData = await Class.findOne({ _id: req.params.id, userId: req.user.userId });
+        if (!classData) {
+            return res.status(404).json({ message: "Turma não encontrada" });
+        }
+        
+        res.json(classData);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erro ao buscar turma" });
     }
 };
