@@ -1,7 +1,9 @@
 import Layout from "./Layout";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+    const navigate = useNavigate();
 
     const [classes, setClasses] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -85,6 +87,26 @@ function Dashboard() {
                 + Nova Turma
             </button>
 
+            <div className="card">
+                <div className="card-body">
+
+                    {classes.length === 0 ? (
+                        <p className="text-muted">Nenhuma turma criada</p>
+                    ) : (
+                        <ul className="list-group">
+                            {classes.map((c) => (
+                                <li key={c._id}
+                                    className="list-group-item"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => navigate(`/classes/${c._id}`)}>
+                                    {c.nome}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+
+                </div>
+            </div>
 
             {showModal && (
                 <div className="modal show d-block" tabIndex="-1">
@@ -129,24 +151,6 @@ function Dashboard() {
                     </div>
                 </div>
             )}
-
-            <div className="card">
-                <div className="card-body">
-
-                    {classes.length === 0 ? (
-                        <p className="text-muted">Nenhuma turma criada</p>
-                    ) : (
-                        <ul className="list-group">
-                            {classes.map((c) => (
-                                <li key={c._id} className="list-group-item">
-                                    {c.nome}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-
-                </div>
-            </div>
         </Layout>
     )
 }
