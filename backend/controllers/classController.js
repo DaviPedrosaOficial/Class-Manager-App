@@ -2,7 +2,7 @@ import Class from "../models/Classes.js";
 
 export const getClasses = async (req, res) => {
     try {
-        const classes = await Class.find({ userId: req.user._id });
+        const classes = await Class.find({ userId: req.user.userId });
         res.json(classes);
     } catch (error) {
         console.error(error);

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 function Dashboard() {
 
     const [classes, setClasses] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [newClassName, setNewClassName] = useState("");
 
     useEffect(() => {
         async function fetchClasses() {
@@ -39,9 +41,7 @@ function Dashboard() {
     }, []);
 
     async function handleCreateClass() {
-        const nome = prompt("Digite o nome da nova turma:");
-
-        if (!nome) {
+        if (!newClassName.trim()) {
             alert("O nome da turma é obrigatório!");
             return;
         }
@@ -55,7 +55,7 @@ function Dashboard() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({ nome })
+                body: JSON.stringify({ nome: newClassName.trim() })
             });
 
             const data = await response.json();
@@ -66,6 +66,8 @@ function Dashboard() {
             }
 
             setClasses((prev) => [...prev, data]);
+            setNewClassName("");
+            setShowModal(false);
 
         } catch (error) {
             console.error("Erro na requisição:", error);
@@ -79,9 +81,54 @@ function Dashboard() {
                 <p className="text-muted">Gerencie suas turmas</p>
             </div>
 
-            <button className="btn btn-primary mb-4" onClick={handleCreateClass}>
+            <button className="btn btn-primary mb-4" onClick={() => setShowModal(true)}>
                 + Nova Turma
             </button>
+
+
+            {showModal && (
+                <div className="modal show d-block" tabIndex="-1">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+
+                            <div className="modal-header">
+                                <h5 className="modal-title">Nova Turma</h5>
+                                <button
+                                    className="btn-close"
+                                    onClick={() => setShowModal(false)}
+                                ></button>
+                            </div>
+
+                            <div className="modal-body">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Nome da turma"
+                                    value={newClassName}
+                                    onChange={(e) => setNewClassName(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="modal-footer">
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => setShowModal(false)}
+                                >
+                                    Cancelar
+                                </button>
+
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={handleCreateClass}
+                                >
+                                    Criar
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="card">
                 <div className="card-body">
