@@ -24,6 +24,8 @@ function ClassPage() {
 
                 const classData = await classResponse.json();
 
+                console.log("Dados da classe:", classData);
+
                 if (classResponse.ok) {
                     setClassData(classData);
                 } else {
@@ -103,13 +105,50 @@ function ClassPage() {
                 </button>
 
                 <h3 className="mt-4">Alunos</h3>
-                <ul className="list-group">
-                    {students.map((student) => (
-                        <li key={student._id} className="list-group-item">
-                            {student.nome} - {student.matricula}
-                        </li>
-                    ))}
-                </ul>
+
+                <table className="table table-bordered mt-3">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+
+                            {classData.atividades.map((atividade, index) => (
+                                <th key={index}>{atividade.nomeAtividade}</th>
+                            ))}
+
+                            <th>Matrícula</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {students.length === 0 ? (
+                            <tr>
+                                <td colSpan={classData.atividades.length + 2} className="text-center">
+                                    Nenhum aluno cadastrado
+                                </td>
+                            </tr>
+                        ) : (
+                            students.map((student) => (
+                                <tr key={student._id}>
+                                    <td>{student.nome}</td>
+
+                                    {classData.atividades.map((atividade, index) => {
+                                        const grade = student.grades?.find(
+                                            (g) => g.nomeAtividade === atividade.nomeAtividade
+                                        );
+
+                                        return (
+                                            <td key={index}>
+                                                {grade ? grade.nota : "-"}
+                                            </td>
+                                        );
+                                    })}
+
+                                    <td>{student.matricula}</td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
             </div>
 
             {showModal && (

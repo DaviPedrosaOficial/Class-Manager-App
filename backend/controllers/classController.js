@@ -12,7 +12,7 @@ export const getClasses = async (req, res) => {
 
 export const createClass = async (req, res) => {
     try {
-        const { nome } = req.body;
+        const { nome, atividades } = req.body;
 
         if (!nome) {
             return res.status(400).json({ message: "O nome da turma é obrigatório" });
@@ -20,6 +20,7 @@ export const createClass = async (req, res) => {
 
         const newClass = await Class.create({
             nome,
+            atividades,
             userId: req.user.userId
         });
 

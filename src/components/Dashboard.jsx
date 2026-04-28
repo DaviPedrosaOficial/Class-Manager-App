@@ -9,6 +9,10 @@ function Dashboard() {
     const [showModal, setShowModal] = useState(false);
     const [newClassName, setNewClassName] = useState("");
 
+    const [atividades, setAtividades] = useState([
+        { nomeAtividade: "", peso: "" }
+    ]);
+
     useEffect(() => {
         async function fetchClasses() {
             const token = localStorage.getItem("token");
@@ -45,13 +49,28 @@ function Dashboard() {
 
         const token = localStorage.getItem("token");
 
+        const atividadesValidas = atividades.filter(
+            (a) =>
+                a.nomeAtividade.trim() !== "" &&
+                a.peso !== "" &&
+                !isNaN(a.peso)
+        );
+
+        if (atividadesValidas.length === 0) {
+            alert("Adicione pelo menos uma atividade avaliativa para que possamos criar a turma!");
+            return;
+        }
+
         const response = await fetch("http://localhost:3000/api/classes", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify({ nome: newClassName.trim() })
+            body: JSON.stringify({
+                nome: newClassName.trim(),
+                atividades: atividadesValidas
+            })
         });
 
         const data = await response.json();
@@ -62,8 +81,20 @@ function Dashboard() {
         }
 
         setClasses((prev) => [...prev, data]);
+
         setNewClassName("");
+        setAtividades([{ nomeAtividade: "", peso: "" }]);
         setShowModal(false);
+    }
+
+    function handleAddAtividade() {
+        setAtividades([...atividades, { nomeAtividade: "", peso: "" }]);
+    }
+
+    function updateAtividade(index, field, value) {
+        const updated = [...atividades];
+        updated[index][field] = value;
+        setAtividades(updated);
     }
 
     return (
@@ -85,10 +116,12 @@ function Dashboard() {
                     ) : (
                         <ul className="list-group">
                             {classes.map((c) => (
-                                <li key={c._id}
+                                <li
+                                    key={c._id}
                                     className="list-group-item"
                                     style={{ cursor: "pointer" }}
-                                    onClick={() => navigate(`/classes/${c._id}`)}>
+                                    onClick={() => navigate(`/classes/${c._id}`)}
+                                >
                                     {c.nome}
                                 </li>
                             ))}
@@ -124,6 +157,45 @@ function Dashboard() {
                                     />
                                 </div>
 
+                                <div className="modal-body">
+                                    <h5>Atividades avaliativas</h5>
+
+                                    {atividades.map((atividade, index) => (
+                                        <div key={index} className="mb-3">
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Nome da atividade"
+                                                value={atividade.nomeAtividade}
+                                                onChange={(e) =>
+                                                    updateAtividade(index, "nomeAtividade", e.target.value)
+                                                }
+                                            />
+
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                placeholder="Peso"
+                                                value={atividade.peso}
+                                                onChange={(e) =>
+                                                    updateAtividade(
+                                                        index,
+                                                        "peso",
+                                                        Number(e.target.value)
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    ))}
+
+                                    <button
+                                        className="btn btn-outline-primary"
+                                        onClick={handleAddAtividade}
+                                    >
+                                        + Adicionar Atividade
+                                    </button>
+                                </div>
+
                                 <div className="modal-footer">
                                     <button
                                         className="btn btn-secondary"
@@ -146,7 +218,7 @@ function Dashboard() {
                 </>
             )}
         </Layout>
-    )
+    );
 }
 
 export default Dashboard;

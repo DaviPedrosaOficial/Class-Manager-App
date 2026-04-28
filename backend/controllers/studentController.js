@@ -1,4 +1,5 @@
 import Student from "../models/Student.js";
+import Class from "../models/Class.js";
 
 export const getStudentsByClassId = async (req, res) => {
     try {
@@ -19,10 +20,19 @@ export const createStudent = async (req, res) => {
             return res.status(400).json({ message: "Todos os campos são obrigatórios" });
         }
 
+        const classData = await Class.findById(req.params.classId);
+
+        if (!classData) {
+            return res.status(404).json({ message: "Turma não encontrada" });
+        }
+
+        const notas = classData.atividades.map((atividade) => ({ nomeAtividade: atividade.nomeAtividade, nota: 0 }));
+
         const newStudent = await Student.create({
             nome,
             matricula,
-            classId: req.params.classId
+            classId: req.params.classId,
+            notas
         });
 
         res.status(201).json(newStudent);
