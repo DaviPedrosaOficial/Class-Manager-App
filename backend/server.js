@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 
 import userRoutes from './routes/userRoutes.js'
+import classRoutes from './routes/classRoutes.js'
 
 dotenv.config();
 
@@ -13,11 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/users', userRoutes);
-
-
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
+app.use('/api/classes', classRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {

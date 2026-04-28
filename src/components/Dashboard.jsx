@@ -38,6 +38,40 @@ function Dashboard() {
         fetchClasses();
     }, []);
 
+    async function handleCreateClass() {
+        const nome = prompt("Digite o nome da nova turma:");
+
+        if (!nome) {
+            alert("O nome da turma é obrigatório!");
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch("http://localhost:3000/api/classes", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ nome })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error("Erro da API:", data.message);
+                return;
+            }
+
+            setClasses((prev) => [...prev, data]);
+
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
+    }
+
     return (
         <Layout>
             <div className="mb-4">
@@ -45,7 +79,7 @@ function Dashboard() {
                 <p className="text-muted">Gerencie suas turmas</p>
             </div>
 
-            <button className="btn btn-primary mb-4">
+            <button className="btn btn-primary mb-4" onClick={handleCreateClass}>
                 + Nova Turma
             </button>
 
