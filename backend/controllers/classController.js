@@ -1,4 +1,4 @@
-import Class from "../models/Classes.js";
+import Class from "../models/Class.js";
 
 export const getClasses = async (req, res) => {
     try {
@@ -37,7 +37,7 @@ export const getClassById = async (req, res) => {
         if (!classData) {
             return res.status(404).json({ message: "Turma não encontrada" });
         }
-        
+
         res.json(classData);
 
     } catch (error) {

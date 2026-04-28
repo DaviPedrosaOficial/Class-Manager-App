@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 
 import userRoutes from './routes/userRoutes.js'
 import classRoutes from './routes/classRoutes.js'
+import studentRoutes from './routes/studentRoutes.js'
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use('/api/users', userRoutes);
 app.use('/api/classes', classRoutes);
+app.use('/api/students', studentRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
