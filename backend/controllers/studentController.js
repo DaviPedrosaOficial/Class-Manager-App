@@ -14,7 +14,7 @@ export const getStudentsByClassId = async (req, res) => {
 
 export const createStudent = async (req, res) => {
     try {
-        const { nome, matricula} = req.body;
+        const { nome, matricula } = req.body;
 
         if (!nome || !matricula) {
             return res.status(400).json({ message: "Todos os campos são obrigatórios" });
@@ -26,13 +26,14 @@ export const createStudent = async (req, res) => {
             return res.status(404).json({ message: "Turma não encontrada" });
         }
 
-        const notas = classData.atividades.map((atividade) => ({ nomeAtividade: atividade.nomeAtividade, nota: 0 }));
-
         const newStudent = await Student.create({
             nome,
             matricula,
             classId: req.params.classId,
-            notas
+            grades: classData.atividades.map((atividade) => ({
+                atividadeId: atividade._id,
+                nota: 0
+            }))
         });
 
         res.status(201).json(newStudent);
@@ -40,5 +41,46 @@ export const createStudent = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Erro ao criar aluno" });
+    }
+};
+
+export const updateStudentGrades = async (req, res) => {
+    try {
+        const { atividadeId, grades } = req.body;
+
+        if (!atividadeId || !grades) {
+            return res.status(400).json({ message: "Dados inválidos" });
+        }
+
+        const students = await Student.find({ classId: req.params.classId });
+
+        for (let student of students) {
+            const value = grades[student._id.toString()];
+
+            if (value !== undefined) {
+                const existing = student.grades.find(
+                    (g) => g.atividadeId.toString() === atividadeId
+                );
+
+                if (existing) {
+                    existing.nota = value;
+                } else {
+                    student.grades.push({
+                        atividadeId,
+                        nota: value
+                    });
+                }
+
+                await student.save();
+            }
+        }
+
+        const updatedStudents = await Student.find({ classId: req.params.classId });
+
+        res.json(updatedStudents);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erro ao atualizar notas" });
     }
 };

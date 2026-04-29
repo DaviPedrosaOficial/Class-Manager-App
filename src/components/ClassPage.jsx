@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { data, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Layout from "./Layout";
 
@@ -10,6 +10,10 @@ function ClassPage() {
     const [showModal, setShowModal] = useState(false);
     const [newStudentName, setNewStudentName] = useState("");
     const [newStudentMatricula, setNewStudentMatricula] = useState("");
+
+    const [showGradeModal, setShowGradeModal] = useState(false);
+    const [selectedActivity, setSelectedActivity] = useState("");
+    const [gradeInput, setGradeInput] = useState({});
 
     useEffect(() => {
         async function fetchData() {
@@ -84,6 +88,42 @@ function ClassPage() {
         setShowModal(false);
     }
 
+    function handleGradeChange(studentId, value) {
+        setGradeInput((prev) => ({
+            ...prev,
+            [studentId]: Number(value)
+        }));
+    }
+
+    async function handleSubmitGrades() {
+        const token = localStorage.getItem("token");
+
+        const gradeResponse = await fetch(`http://localhost:3000/api/students/grades/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                atividadeId: selectedActivity,
+                grades: gradeInput
+            })
+        });
+
+        const gradeData = await gradeResponse.json();
+
+        if (!gradeResponse.ok) {
+            console.error("Erro lançar notas:", gradeData);
+            return;
+        }
+
+        setStudents(gradeData);
+
+        setShowGradeModal(false);
+        setGradeInput({});
+        setSelectedActivity("");
+    }
+
     if (!classData) {
         return (
             <Layout>
@@ -102,6 +142,13 @@ function ClassPage() {
 
                 <button className="btn btn-primary mb-3" onClick={() => setShowModal(true)}>
                     + Adicionar Aluno
+                </button>
+
+                <button
+                    className="btn btn-success mb-3 ms-2"
+                    onClick={() => setShowGradeModal(true)}
+                >
+                    + Lançar Notas
                 </button>
 
                 <h3 className="mt-4">Alunos</h3>
@@ -133,7 +180,7 @@ function ClassPage() {
 
                                     {classData.atividades.map((atividade, index) => {
                                         const grade = student.grades?.find(
-                                            (g) => g.nomeAtividade === atividade.nomeAtividade
+                                            (g) => g.atividadeId?.toString() === atividade._id?.toString()
                                         );
 
                                         return (
@@ -151,6 +198,8 @@ function ClassPage() {
                 </table>
             </div>
 
+
+            {/* Modal Adicionar Aluno */}
             {showModal && (
                 <>
                     <div className="modal-backdrop fade show"></div>
@@ -203,6 +252,76 @@ function ClassPage() {
                                     </button>
                                 </div>
 
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {/* Modal para lançar notas */}
+            {showGradeModal && (
+                <>
+                    <div className="modal-backdrop fade show"></div>
+
+                    <div className="modal fade show d-block" tabIndex="-1">
+                        <div className="modal-dialog modal-lg">
+                            <div className="modal-content">
+
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Lançar Notas</h5>
+                                    <button
+                                        className="btn-close"
+                                        onClick={() => setShowGradeModal(false)}
+                                    ></button>
+                                </div>
+
+                                <div className="modal-body">
+
+                                    <select
+                                        className="form-select mb-3"
+                                        value={selectedActivity}
+                                        onChange={(e) => setSelectedActivity(e.target.value)}
+                                    >
+                                        <option value="">Selecione uma atividade</option>
+
+                                        {classData.atividades.map((atividade) => (
+                                            <option key={atividade._id} value={atividade._id}>
+                                                {atividade.nomeAtividade}
+                                            </option>
+                                        ))}
+                                    </select>
+
+                                    {selectedActivity && students.map((student) => (
+                                        <div key={student._id} className="d-flex justify-content-between mb-2">
+                                            <span>{student.nome}</span>
+
+                                            <input
+                                                type="number"
+                                                className="form-control w-25"
+                                                placeholder="Nota"
+                                                value={gradeInput[student._id] || ""}
+                                                onChange={(e) => handleGradeChange(student._id, e.target.value)}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="modal-footer">
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => setShowGradeModal(false)}
+                                    >
+                                        Cancelar
+                                    </button>
+
+                                    <button
+                                        className="btn btn-success"
+                                        onClick={handleSubmitGrades}
+                                        disabled={!selectedActivity || Object.keys(gradeInput).length === 0}
+                                    >
+                                        Salvar Notas
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
