@@ -54,8 +54,26 @@ export const updateStudentGrades = async (req, res) => {
 
         const students = await Student.find({ classId: req.params.classId });
 
+        const classData = await Class.findById(req.params.classId);
+
+        const atividade = classData.atividades.find(
+            (a) => a._id.toString() === atividadeId
+        );
+
+        if (!atividade){
+            return res.status(404).json({ message: "Atividade não encontrada" });
+        }
+
+        const max = atividade.peso;
+
         for (let student of students) {
             const value = grades[student._id.toString()];
+
+            if (value > max){
+                return res.status(400).json({
+                    message: `Nota não pode ser maior que ${max}`
+                });
+            }
 
             if (value !== undefined) {
                 const existing = student.grades.find(

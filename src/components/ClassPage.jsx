@@ -98,6 +98,16 @@ function ClassPage() {
     async function handleSubmitGrades() {
         const token = localStorage.getItem("token");
 
+        const atividade = classData.atividades.find(a => a._id === selectedActivity);
+        const max = atividade?.peso || 0;
+
+        for (let studentId in gradeInput) {
+            if (gradeInput[studentId] > max) {
+                alert("A nota não pode ser maior que o peso da atividade!")
+                return;
+            }
+        }
+
         const gradeResponse = await fetch(`http://localhost:3000/api/students/grades/${id}`, {
             method: "PUT",
             headers: {
@@ -299,8 +309,20 @@ function ClassPage() {
                                                 type="number"
                                                 className="form-control w-25"
                                                 placeholder="Nota"
+                                                min="0"
+                                                max={
+                                                    classData.atividades.find(a => a._id === selectedActivity)?.peso || 0
+                                                }
                                                 value={gradeInput[student._id] || ""}
-                                                onChange={(e) => handleGradeChange(student._id, e.target.value)}
+                                                onChange={(e) => {
+                                                    const value = Number(e.target.value);
+                                                    const atividade = classData.atividades.find(a => a._id === selectedActivity);
+                                                    const max = atividade?.peso || 0;
+
+                                                    if (value <= max) {
+                                                        handleGradeChange(student._id, value);
+                                                    }
+                                                }}
                                             />
                                         </div>
                                     ))}
