@@ -183,19 +183,19 @@ function ClassPage() {
 
                 <h3 className="mt-4">Alunos</h3>
 
-                <table className="table table-bordered mt-3">
+                <table className="table table-bordered mt-3 table-custom shadow-sm">
                     <thead>
                         <tr>
                             <th>Nome</th>
 
                             {classData.atividades.map((atividade, index) => (
-                                <th key={index}>{atividade.nomeAtividade}</th>
+                                <th key={index}>
+                                    {atividade.nomeAtividade}
+                                </th>
                             ))}
 
                             <th>Média</th>
-
                             <th>Situação</th>
-
                             <th>Matrícula</th>
                         </tr>
                     </thead>
@@ -242,9 +242,9 @@ function ClassPage() {
                                             {!temNotas ? (
                                                 <span className="text-muted">Sem avaliação</span>
                                             ) : media >= classData.mediaMinima ? (
-                                                <span className="text-sucess">Aprovado</span>
+                                                <span className="badge bg-success">Aprovado</span>
                                             ) : (
-                                                <span className="text-danger">Em risco</span>
+                                                <span className="badge bg-danger">Em risco</span>
                                             )}
                                         </td>
 

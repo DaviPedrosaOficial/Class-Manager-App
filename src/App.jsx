@@ -1,4 +1,5 @@
 import AppRoutes from "./routes"
+import "./styles/table.css";
 
 function App() {
 
