@@ -183,30 +183,40 @@ function ClassPage() {
 
                 <h3 className="mt-4">Alunos</h3>
 
-                <div className="table-container">
-                    <table className="table table-bordered mt-3 table-custom shadow-sm">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
+                <div className="table-container"
+                    style={{ "--cols": classData.atividades.length + 4 }}>
 
-                                {classData.atividades.map((atividade, index) => (
-                                    <th key={index}>{atividade.nomeAtividade}</th>
-                                ))}
+                    {/* HEADER */}
+                    <div className="table-header">
+                        <div className="table-row">
+                            <div>Nome</div>
 
-                                <th>Média</th>
-                                <th>Situação</th>
-                                <th>Matrícula</th>
-                            </tr>
-                        </thead>
+                            {classData.atividades.map((atividade, index) => (
+                                <div key={index}>{atividade.nomeAtividade}</div>
+                            ))}
 
-                        <tbody>
-                            {students.map((student) => {
+                            <div>Média</div>
+                            <div>Situação</div>
+                            <div>Matrícula</div>
+                        </div>
+                    </div>
+
+                    {/* BODY */}
+                    <div className="table-body">
+                        {students.length === 0 ? (
+                            <div className="table-row">
+                                <div style={{ gridColumn: "1 / -1", textAlign: "center" }}>
+                                    Nenhum aluno cadastrado
+                                </div>
+                            </div>
+                        ) : (
+                            students.map((student) => {
                                 const media = calcularMedia(student, classData.atividades);
                                 const temNotas = student.grades && student.grades.length > 0;
 
                                 return (
-                                    <tr key={student._id}>
-                                        <td>{student.nome}</td>
+                                    <div className="table-row" key={student._id}>
+                                        <div>{student.nome}</div>
 
                                         {classData.atividades.map((atividade, index) => {
                                             const grade = student.grades?.find(
@@ -214,18 +224,21 @@ function ClassPage() {
                                             );
 
                                             return (
-                                                <td key={index}>
-                                                    {grade
-                                                        ? <strong>{grade.nota} / {atividade.peso}</strong>
-                                                        : <span className="text-muted">- / {atividade.peso}</span>
-                                                    }
-                                                </td>
+                                                <div key={index}>
+                                                    {grade ? (
+                                                        <strong>{grade.nota} / {atividade.peso}</strong>
+                                                    ) : (
+                                                        <span className="text-muted">
+                                                            - / {atividade.peso}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             );
                                         })}
 
-                                        <td>{media.toFixed(1)}%</td>
+                                        <div>{media.toFixed(1)}%</div>
 
-                                        <td>
+                                        <div>
                                             {!temNotas ? (
                                                 <span className="text-muted">Sem avaliação</span>
                                             ) : media >= classData.mediaMinima ? (
@@ -233,14 +246,15 @@ function ClassPage() {
                                             ) : (
                                                 <span className="badge bg-danger">Em risco</span>
                                             )}
-                                        </td>
+                                        </div>
 
-                                        <td>{student.matricula}</td>
-                                    </tr>
+                                        <div>{student.matricula}</div>
+                                    </div>
                                 );
-                            })}
-                        </tbody>
-                    </table>
+                            })
+                        )}
+                    </div>
+
                 </div>
             </div>
 
