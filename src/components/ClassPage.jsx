@@ -15,6 +15,10 @@ function ClassPage() {
     const [selectedActivity, setSelectedActivity] = useState("");
     const [gradeInput, setGradeInput] = useState({});
 
+    const [sortType, setSortType] = useState("nome")
+    const [search, setSearch] = useState("");
+    const [statusFilter, setStatusFilter] = useState("todos");
+
     useEffect(() => {
         async function fetchData() {
             const token = localStorage.getItem("token");
@@ -154,6 +158,53 @@ function ClassPage() {
         return (somaNotas / somaPesos) * 100;
     }
 
+    function getFilteredAndSortedStudents() {
+        let filtered = [...students];
+
+        if (search.trim() !== "") {
+            filtered = filtered.filter((student) =>
+                student.nome.toLowerCase().includes(search.toLowerCase())
+            );
+        }
+
+        if (statusFilter !== "todos") {
+            filtered = filtered.filter((student) => {
+                const media = calcularMedia(student, classData.atividades);
+                const temNotas = student.grades && student.grades.length > 0;
+
+                if (statusFilter === "aprovado") {
+                    return temNotas && media >= classData.mediaMinima;
+                }
+
+                if (statusFilter === "risco") {
+                    return temNotas && media < classData.mediaMinima;
+                }
+
+                if (statusFilter === "sem avaliação") {
+                    return !temNotas;
+                }
+
+                return true;
+            });
+        }
+
+        if (sortType === "media") {
+            return filtered.sort((a, b) => {
+                const mediaA = calcularMedia(a, classData.atividades);
+                const mediaB = calcularMedia(b, classData.atividades);
+                return mediaB - mediaA;
+            });
+        }
+
+        if (sortType === "nome") {
+            return filtered.sort((a, b) =>
+                a.nome.localeCompare(b.nome, "pt-BR")
+            );
+        }
+
+        return filtered;
+    }
+
     if (!classData) {
         return (
             <Layout>
@@ -181,7 +232,45 @@ function ClassPage() {
                     + Lançar Notas
                 </button>
 
-                <h3 className="mt-4">Alunos</h3>
+                <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+
+                    <h4 className="mb-0">Alunos</h4>
+
+                    <div className="d-flex gap-2 align-items-center flex-wrap">
+
+                        <input
+                            type="text"
+                            className="form-control form-control-sm"
+                            placeholder="Buscar aluno..."
+                            style={{ width: "180px" }}
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+
+                        <select
+                            className="form-select form-select-sm"
+                            style={{ width: "160px" }}
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                        >
+                            <option value="todos">Todos</option>
+                            <option value="aprovado">Aprovados</option>
+                            <option value="risco">Em risco</option>
+                            <option value="sem">Sem avaliação</option>
+                        </select>
+
+                        <select
+                            className="form-select form-select-sm"
+                            style={{ width: "180px" }}
+                            value={sortType}
+                            onChange={(e) => setSortType(e.target.value)}
+                        >
+                            <option value="nome">Nome (A-Z)</option>
+                            <option value="media">Maior média</option>
+                        </select>
+
+                    </div>
+                </div>
 
                 <div className="table-container"
                     style={{ "--cols": classData.atividades.length + 4 }}>
@@ -210,7 +299,7 @@ function ClassPage() {
                                 </div>
                             </div>
                         ) : (
-                            students.map((student) => {
+                            getFilteredAndSortedStudents().map((student) => {
                                 const media = calcularMedia(student, classData.atividades);
                                 const temNotas = student.grades && student.grades.length > 0;
 
