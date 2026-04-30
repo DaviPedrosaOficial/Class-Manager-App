@@ -158,6 +158,26 @@ function ClassPage() {
         return (somaNotas / somaPesos) * 100;
     }
 
+    function calcularTotal(student, atividades) {
+        let total = 0;
+
+        atividades.forEach((atividade) => {
+            const grade = student.grades?.find(
+                (g) => g.atividadeId?.toString() === atividade._id?.toString()
+            );
+
+            if (grade) {
+                total += grade.nota;
+            }
+        });
+
+        return total;
+    }
+
+    function calcularTotalMaximo(atividades) {
+        return atividades.reduce((acumulador, a) => acumulador + a.peso, 0);
+    }
+
     function getFilteredAndSortedStudents() {
         let filtered = [...students];
 
@@ -273,7 +293,7 @@ function ClassPage() {
                 </div>
 
                 <div className="table-container"
-                    style={{ "--cols": classData.atividades.length + 4 }}>
+                    style={{ "--cols": classData.atividades.length + 5 }}>
 
                     {/* HEADER */}
                     <div className="table-header">
@@ -285,6 +305,7 @@ function ClassPage() {
                             ))}
 
                             <div>Média</div>
+                            <div>Total</div>
                             <div>Situação</div>
                             <div>Matrícula</div>
                         </div>
@@ -302,6 +323,8 @@ function ClassPage() {
                             getFilteredAndSortedStudents().map((student) => {
                                 const media = calcularMedia(student, classData.atividades);
                                 const temNotas = student.grades && student.grades.length > 0;
+                                const total = calcularTotal(student, classData.atividades);
+                                const totalMax = calcularTotalMaximo(classData.atividades);
 
                                 return (
                                     <div className="table-row" key={student._id}>
@@ -311,6 +334,7 @@ function ClassPage() {
                                             const grade = student.grades?.find(
                                                 (g) => g.atividadeId?.toString() === atividade._id?.toString()
                                             );
+
 
                                             return (
                                                 <div key={index}>
@@ -326,6 +350,8 @@ function ClassPage() {
                                         })}
 
                                         <div>{media.toFixed(1)}%</div>
+
+                                        <div>{total} / {totalMax}</div>
 
                                         <div>
                                             {!temNotas ? (
