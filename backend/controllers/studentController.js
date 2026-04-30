@@ -30,10 +30,7 @@ export const createStudent = async (req, res) => {
             nome,
             matricula,
             classId: req.params.classId,
-            grades: classData.atividades.map((atividade) => ({
-                atividadeId: atividade._id,
-                nota: 0
-            }))
+            grades: []
         });
 
         res.status(201).json(newStudent);

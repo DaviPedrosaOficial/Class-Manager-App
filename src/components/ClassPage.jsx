@@ -210,6 +210,7 @@ function ClassPage() {
                         ) : (
                             students.map((student) => {
                                 const media = calcularMedia(student, classData.atividades);
+                                const temNotas = student.grades && student.grades.length > 0;
 
                                 return (
                                     <tr key={student._id}>
@@ -238,8 +239,10 @@ function ClassPage() {
                                         <td>{media.toFixed(1)}%</td>
 
                                         <td>
-                                            {media >= classData.mediaMinima ? (
-                                                <span className="text-success">Aprovado</span>
+                                            {!temNotas ? (
+                                                <span className="text-muted">Sem avaliação</span>
+                                            ) : media >= classData.mediaMinima ? (
+                                                <span className="text-sucess">Aprovado</span>
                                             ) : (
                                                 <span className="text-danger">Em risco</span>
                                             )}
