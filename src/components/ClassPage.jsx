@@ -134,6 +134,26 @@ function ClassPage() {
         setSelectedActivity("");
     }
 
+    function calcularMedia(student, atividades) {
+        let somaNotas = 0;
+        let somaPesos = 0;
+
+        atividades.forEach((atividade) => {
+            const grade = student.grades?.find(
+                (a) => a.atividadeId?.toString() === atividade._id?.toString()
+            );
+
+            if (grade && grade.nota !== undefined) {
+                somaNotas += grade.nota;
+                somaPesos += atividade.peso;
+            }
+        });
+
+        if (somaPesos === 0) return 0;
+
+        return (somaNotas / somaPesos) * 100;
+    }
+
     if (!classData) {
         return (
             <Layout>
@@ -172,6 +192,10 @@ function ClassPage() {
                                 <th key={index}>{atividade.nomeAtividade}</th>
                             ))}
 
+                            <th>Média</th>
+
+                            <th>Situação</th>
+
                             <th>Matrícula</th>
                         </tr>
                     </thead>
@@ -179,41 +203,52 @@ function ClassPage() {
                     <tbody>
                         {students.length === 0 ? (
                             <tr>
-                                <td colSpan={classData.atividades.length + 2} className="text-center">
+                                <td colSpan={classData.atividades.length + 4} className="text-center">
                                     Nenhum aluno cadastrado
                                 </td>
                             </tr>
                         ) : (
-                            students.map((student) => (
-                                <tr key={student._id}>
-                                    <td>{student.nome}</td>
+                            students.map((student) => {
+                                const media = calcularMedia(student, classData.atividades);
 
-                                    {classData.atividades.map((atividade, index) => {
-                                        const grade = student.grades?.find(
-                                            (g) => g.atividadeId?.toString() === atividade._id?.toString()
-                                        );
+                                return (
+                                    <tr key={student._id}>
+                                        <td>{student.nome}</td>
 
-                                        return (
-                                            <td key={index}>
-                                                {grade
-                                                    ? (
+                                        {classData.atividades.map((atividade, index) => {
+                                            const grade = student.grades?.find(
+                                                (g) => g.atividadeId?.toString() === atividade._id?.toString()
+                                            );
+
+                                            return (
+                                                <td key={index}>
+                                                    {grade ? (
                                                         <span>
                                                             <strong>{grade.nota}</strong> / {atividade.peso}
                                                         </span>
-                                                    )
-                                                    : (
+                                                    ) : (
                                                         <span className="text-muted">
-                                                            0 / {atividade.peso}
+                                                            - / {atividade.peso}
                                                         </span>
-                                                    )
-                                                }
-                                            </td>
-                                        );
-                                    })}
+                                                    )}
+                                                </td>
+                                            );
+                                        })}
 
-                                    <td>{student.matricula}</td>
-                                </tr>
-                            ))
+                                        <td>{media.toFixed(1)}%</td>
+
+                                        <td>
+                                            {media >= classData.mediaMinima ? (
+                                                <span className="text-success">Aprovado</span>
+                                            ) : (
+                                                <span className="text-danger">Em risco</span>
+                                            )}
+                                        </td>
+
+                                        <td>{student.matricula}</td>
+                                    </tr>
+                                );
+                            })
                         )}
                     </tbody>
                 </table>
