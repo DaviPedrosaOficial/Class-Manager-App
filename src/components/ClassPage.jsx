@@ -166,7 +166,7 @@ function ClassPage() {
 
     return (
         <Layout>
-            <div className="container mt-4">
+            <div className="container mt-4 mb-5">
                 <h2>Matéria: {classData.nome}</h2>
                 <p>Aqui você poderá gerenciar a turma.</p>
 
@@ -183,32 +183,24 @@ function ClassPage() {
 
                 <h3 className="mt-4">Alunos</h3>
 
-                <table className="table table-bordered mt-3 table-custom shadow-sm">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-
-                            {classData.atividades.map((atividade, index) => (
-                                <th key={index}>
-                                    {atividade.nomeAtividade}
-                                </th>
-                            ))}
-
-                            <th>Média</th>
-                            <th>Situação</th>
-                            <th>Matrícula</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {students.length === 0 ? (
+                <div className="table-container">
+                    <table className="table table-bordered mt-3 table-custom shadow-sm">
+                        <thead>
                             <tr>
-                                <td colSpan={classData.atividades.length + 4} className="text-center">
-                                    Nenhum aluno cadastrado
-                                </td>
+                                <th>Nome</th>
+
+                                {classData.atividades.map((atividade, index) => (
+                                    <th key={index}>{atividade.nomeAtividade}</th>
+                                ))}
+
+                                <th>Média</th>
+                                <th>Situação</th>
+                                <th>Matrícula</th>
                             </tr>
-                        ) : (
-                            students.map((student) => {
+                        </thead>
+
+                        <tbody>
+                            {students.map((student) => {
                                 const media = calcularMedia(student, classData.atividades);
                                 const temNotas = student.grades && student.grades.length > 0;
 
@@ -223,15 +215,10 @@ function ClassPage() {
 
                                             return (
                                                 <td key={index}>
-                                                    {grade ? (
-                                                        <span>
-                                                            <strong>{grade.nota}</strong> / {atividade.peso}
-                                                        </span>
-                                                    ) : (
-                                                        <span className="text-muted">
-                                                            - / {atividade.peso}
-                                                        </span>
-                                                    )}
+                                                    {grade
+                                                        ? <strong>{grade.nota} / {atividade.peso}</strong>
+                                                        : <span className="text-muted">- / {atividade.peso}</span>
+                                                    }
                                                 </td>
                                             );
                                         })}
@@ -251,10 +238,10 @@ function ClassPage() {
                                         <td>{student.matricula}</td>
                                     </tr>
                                 );
-                            })
-                        )}
-                    </tbody>
-                </table>
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
 
