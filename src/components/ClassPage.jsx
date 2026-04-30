@@ -195,7 +195,18 @@ function ClassPage() {
 
                                         return (
                                             <td key={index}>
-                                                {grade ? grade.nota : "-"}
+                                                {grade
+                                                    ? (
+                                                        <span>
+                                                            <strong>{grade.nota}</strong> / {atividade.peso}
+                                                        </span>
+                                                    )
+                                                    : (
+                                                        <span className="text-muted">
+                                                            0 / {atividade.peso}
+                                                        </span>
+                                                    )
+                                                }
                                             </td>
                                         );
                                     })}
