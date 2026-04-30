@@ -1,160 +1,219 @@
-📚 ClassManager
+# 📚 ClassManager
+
+![React](https://img.shields.io/badge/Frontend-React-blue?logo=react)
+![Node.js](https://img.shields.io/badge/Backend-Node.js-green?logo=node.js)
+![MongoDB](https://img.shields.io/badge/Database-MongoDB-brightgreen?logo=mongodb)
+![Express](https://img.shields.io/badge/API-Express-black?logo=express)
+![JWT](https://img.shields.io/badge/Auth-JWT-orange)
+![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)
+![License](https://img.shields.io/badge/License-MIT-blue)
+
 Um sistema web para gerenciamento de turmas, alunos e desempenho acadêmico, permitindo que professores acompanhem o progresso dos estudantes de forma organizada e intuitiva.
 
-🚀 Visão Geral
+---
+
+## 🚀 Visão Geral
+
 O ClassManager é uma aplicação web desenvolvida com Node.js e React que permite ao professor:
 
-Criar e gerenciar turmas
-Cadastrar alunos
-Definir atividades avaliativas com pesos
-Lançar notas
-Acompanhar desempenho com médias e totais
-Filtrar, ordenar e buscar alunos dinamicamente
+- Criar e gerenciar turmas
+- Cadastrar alunos
+- Definir atividades avaliativas com pesos
+- Lançar notas
+- Acompanhar desempenho com médias e totais
+- Filtrar, ordenar e buscar alunos dinamicamente
 
-✨ Funcionalidades
+---
 
-🔐 Autenticação
-Cadastro de usuário
-Login com token JWT
-Proteção de rotas
+## ✨ Funcionalidades
 
-📚 Turmas
-Criação de turmas
-Definição de atividades avaliativas
-Configuração de média mínima
+### 🔐 Autenticação
 
-👨‍🎓 Alunos
-Cadastro de alunos com nome e matrícula
-Listagem dinâmica
-Edição e exclusão (em evolução)
+- Cadastro de usuário
+- Login com token JWT
+- Proteção de rotas
 
-📝 Notas
-Lançamento de notas por atividade
-Validação baseada no peso da atividade
-Atualização em tempo real
+### 📚 Turmas
 
-📊 Análise de Desempenho
-Cálculo de média (%)
-Cálculo de total de pontos
-Exibição de situação (Aprovado / Em risco / Sem avaliação)
+- Criação de turmas
+- Definição de atividades avaliativas
+- Configuração de média mínima
 
-🔍 Filtros e Ordenação
-Busca por nome
-Ordenação por nome ou média
-Filtro por status
+### 👨‍🎓 Alunos
 
-🎨 Interface
-Layout moderno com React
-Tabela dinâmica com scroll e header fixo
-Coluna fixa para melhor visualização
-Interface responsiva e interativa
+- Cadastro de alunos com nome e matrícula
+- Listagem dinâmica
+- Edição e exclusão (em evolução)
 
-🛠️ Tecnologias Utilizadas
+### 📝 Notas
 
-Tecnologia | Função
-Node.js | Backend
-Express | API REST
-MongoDB | Banco de dados
-Mongoose | ODM
-React | Interface frontend
-Bootstrap | Estilização
-JWT | Autenticação
-dotenv | Variáveis de ambiente
+- Lançamento de notas por atividade
+- Validação baseada no peso da atividade
+- Atualização em tempo real
 
-⚙️ Instalação
+### 📊 Análise de Desempenho
 
-1. Clone o projeto
-   git clone <SEU_REPOSITORIO>
+- Cálculo de média (%)
+- Cálculo de total de pontos
+- Exibição de situação (Aprovado / Em risco / Sem avaliação)
 
-2. Acesse a pasta
-   cd <PASTA_DO_PROJETO>
+### 🔍 Filtros e Ordenação
 
-3. Instale as dependências
+- Busca por nome
+- Ordenação por nome ou média
+- Filtro por status
 
-Backend:
+---
+
+## 🎨 Interface
+
+- Layout moderno com React
+- Tabela dinâmica com scroll e header fixo
+- Coluna fixa para melhor visualização
+- Interface responsiva e interativa
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+| Tecnologia | Função                |
+| ---------- | --------------------- |
+| Node.js    | Backend               |
+| Express    | API REST              |
+| MongoDB    | Banco de dados        |
+| Mongoose   | ODM                   |
+| React      | Interface frontend    |
+| Bootstrap  | Estilização           |
+| JWT        | Autenticação          |
+| dotenv     | Variáveis de ambiente |
+
+---
+
+## ⚙️ Instalação
+
+```bash
+git clone <SEU_REPOSITORIO>
+cd <PASTA_DO_PROJETO>
+```
+
+### Backend
+
+```bash
 cd backend
 npm install
+```
 
-Frontend:
+### Frontend
+
+```bash
 cd frontend
 npm install
+```
 
-🔧 Configuração do ambiente (.env)
+---
+
+## 🔧 Configuração do ambiente (.env)
 
 ⚠️ IMPORTANTE:
-É necessário criar um arquivo `.env` dentro da pasta **backend**.
+Crie um arquivo `.env` dentro da pasta **backend** com:
 
-Esse arquivo deve conter:
-
-MONGO_URI=sua_string_de_conexao_mongodb
+```env
+MONGO_URI=sua_string_mongodb
 JWT_SECRET=sua_chave_secreta
+```
 
-🧠 Explicação das variáveis
+### 🧠 Explicação
 
-MONGO_URI
-Responsável por conectar a aplicação ao banco MongoDB (local ou Atlas)
-Utilizado no arquivo server.js
+- **MONGO_URI** → conexão com o MongoDB (usado no `server.js`)
+- **JWT_SECRET** → chave de autenticação (usado no `authMiddleware.js`)
 
-JWT_SECRET
-Chave usada para geração e validação de tokens JWT
-Utilizada no authMiddleware.js
+---
 
-▶️ Executando o projeto
+## ▶️ Executando o projeto
 
-Backend:
+### Backend
+
+```bash
 cd backend
 npm run dev
+```
 
-Frontend:
+### Frontend
+
+```bash
 cd frontend
 npm run dev
+```
 
-Acesse no navegador:
+Acesse:
 http://localhost:5173
 
-🗄️ Banco de Dados
+---
 
-Você pode utilizar MongoDB local ou MongoDB Atlas.
+## 🗄️ Banco de Dados
 
-Local:
-Instale o MongoDB
-Execute: mongod
+Você pode usar:
 
-Atlas:
-Crie um cluster em https://www.mongodb.com/atlas
-Copie a string de conexão
-Adicione no .env como MONGO_URI
+### 🖥️ Local
 
-🏗️ Estrutura do Projeto
+- Instale MongoDB
+- Execute:
 
-Backend:
-Controllers → lógica da aplicação
-Models → estrutura dos dados
-Routes → definição das rotas
-Middlewares → autenticação e segurança
+```bash
+mongod
+```
 
-Frontend:
-Componentes React
-Gerenciamento de estado
-Consumo da API
+### ☁️ Atlas
 
-🔄 Fluxo da aplicação
+- https://www.mongodb.com/atlas
+- Crie cluster
+- Copie a string
+- Cole no `.env`
 
-Usuário faz requisição no frontend
-Frontend consome a API
-Backend processa a lógica
-Banco armazena os dados
-Resposta é retornada e exibida na interface
+---
 
-💡 Melhorias Futuras
+## 🏗️ Estrutura do Projeto
 
-Edição e exclusão de alunos
-Dashboard com gráficos
-Ranking da turma
-Melhor responsividade mobile
+### Backend
 
-👨‍💻 Autor
+- Controllers
+- Models
+- Routes
+- Middlewares
+
+### Frontend
+
+- Componentes React
+- Gerenciamento de estado
+- Consumo de API
+
+---
+
+## 🔄 Fluxo da aplicação
+
+1. Usuário interage com o frontend
+2. Frontend consome a API
+3. Backend processa a lógica
+4. Banco armazena dados
+5. Interface é atualizada
+
+---
+
+## 💡 Melhorias Futuras
+
+- Edição e exclusão de alunos
+- Dashboard com gráficos
+- Ranking da turma
+- Melhor responsividade mobile
+
+---
+
+## 👨‍💻 Autor
+
 Davi Pedrosa
 
-📄 Licença
+---
+
+## 📄 Licença
+
 MIT
