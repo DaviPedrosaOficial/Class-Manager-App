@@ -13,6 +13,8 @@ function Dashboard() {
         { nomeAtividade: "", peso: "" }
     ]);
 
+    const [mediaMinima, setMediaMinima] = useState("");
+
     useEffect(() => {
         async function fetchClasses() {
             const token = localStorage.getItem("token");
@@ -69,7 +71,8 @@ function Dashboard() {
             },
             body: JSON.stringify({
                 nome: newClassName.trim(),
-                atividades: atividadesValidas
+                atividades: atividadesValidas,
+                mediaMinima: Number(mediaMinima)
             })
         });
 
@@ -155,6 +158,15 @@ function Dashboard() {
                                         value={newClassName}
                                         onChange={(e) => setNewClassName(e.target.value)}
                                     />
+                                </div>
+
+                                <div className="modal-body">
+                                    <input
+                                        type="text"
+                                        className="form-control mt-2"
+                                        placeholder="Média mínima (ex: 60)"
+                                        value={mediaMinima}
+                                        onChange={(e) => setMediaMinima(e.target.value)} />
                                 </div>
 
                                 <div className="modal-body">

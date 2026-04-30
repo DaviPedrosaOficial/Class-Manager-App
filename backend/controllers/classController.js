@@ -12,15 +12,20 @@ export const getClasses = async (req, res) => {
 
 export const createClass = async (req, res) => {
     try {
-        const { nome, atividades } = req.body;
+        const { nome, atividades, mediaMinima } = req.body;
 
         if (!nome) {
             return res.status(400).json({ message: "O nome da turma é obrigatório" });
         }
 
+        if (!mediaMinima){
+            return res.status(400).json({ message: "Informe a média mínima" });
+        }
+
         const newClass = await Class.create({
             nome,
             atividades,
+            mediaMinima,
             userId: req.user.userId
         });
 
