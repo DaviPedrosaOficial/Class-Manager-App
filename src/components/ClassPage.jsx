@@ -1,5 +1,5 @@
-import { data, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect, useState, useMemo } from "react";
 import Layout from "./Layout";
 
 function ClassPage() {
@@ -174,12 +174,25 @@ function ClassPage() {
         return total;
     }
 
+    const processedStudents = useMemo(() => {
+        return students.map((student) => {
+            const media = calcularMedia(student, classData.atividades);
+            const total = calcularTotal(student, classData.atividades);
+
+            return {
+                ...student,
+                media,
+                total
+            };
+        });
+    }, [students, classData?.atividades]);
+
     function calcularTotalMaximo(atividades) {
         return atividades.reduce((acumulador, a) => acumulador + a.peso, 0);
     }
 
     function getFilteredAndSortedStudents() {
-        let filtered = [...students];
+        let filtered = [...processedStudents];
 
         if (search.trim() !== "") {
             filtered = filtered.filter((student) =>
@@ -189,7 +202,7 @@ function ClassPage() {
 
         if (statusFilter !== "todos") {
             filtered = filtered.filter((student) => {
-                const media = calcularMedia(student, classData.atividades);
+                const media = student.media;
                 const temNotas = student.grades && student.grades.length > 0;
 
                 if (statusFilter === "aprovado") {
@@ -200,7 +213,7 @@ function ClassPage() {
                     return temNotas && media < classData.mediaMinima;
                 }
 
-                if (statusFilter === "sem avaliação") {
+                if (statusFilter === "sem") {
                     return !temNotas;
                 }
 
@@ -210,9 +223,7 @@ function ClassPage() {
 
         if (sortType === "media") {
             return filtered.sort((a, b) => {
-                const mediaA = calcularMedia(a, classData.atividades);
-                const mediaB = calcularMedia(b, classData.atividades);
-                return mediaB - mediaA;
+                return b.media - a.media;
             });
         }
 
@@ -234,7 +245,7 @@ function ClassPage() {
             </Layout>
         );
     }
-
+    const totalMax = calcularTotalMaximo(classData.atividades);
     return (
         <Layout>
             <div className="container mt-4 mb-5">
@@ -321,10 +332,10 @@ function ClassPage() {
                             </div>
                         ) : (
                             getFilteredAndSortedStudents().map((student) => {
-                                const media = calcularMedia(student, classData.atividades);
+                                const media = student.media;
                                 const temNotas = student.grades && student.grades.length > 0;
-                                const total = calcularTotal(student, classData.atividades);
-                                const totalMax = calcularTotalMaximo(classData.atividades);
+                                const total = student.total;
+
 
                                 return (
                                     <div className="table-row" key={student._id}>
