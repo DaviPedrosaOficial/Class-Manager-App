@@ -191,7 +191,7 @@ function ClassPage() {
         return atividades.reduce((acumulador, a) => acumulador + a.peso, 0);
     }
 
-    function getFilteredAndSortedStudents() {
+    const filteredStudents = useMemo(() => {
         let filtered = [...processedStudents];
 
         if (search.trim() !== "") {
@@ -217,24 +217,20 @@ function ClassPage() {
                     return !temNotas;
                 }
 
-                return true;
+                return true
             });
         }
 
         if (sortType === "media") {
-            return filtered.sort((a, b) => {
-                return b.media - a.media;
-            });
+            return filtered.sort((a, b) => b.media - a.media);
         }
 
         if (sortType === "nome") {
-            return filtered.sort((a, b) =>
-                a.nome.localeCompare(b.nome, "pt-BR")
-            );
+            return filtered.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
         }
 
         return filtered;
-    }
+    }, [processedStudents, search, statusFilter, sortType, classData]);
 
     if (!classData) {
         return (
@@ -245,7 +241,9 @@ function ClassPage() {
             </Layout>
         );
     }
+
     const totalMax = calcularTotalMaximo(classData.atividades);
+
     return (
         <Layout>
             <div className="container mt-4 mb-5">
@@ -331,7 +329,7 @@ function ClassPage() {
                                 </div>
                             </div>
                         ) : (
-                            getFilteredAndSortedStudents().map((student) => {
+                            filteredStudents.map((student) => {
                                 const media = student.media;
                                 const temNotas = student.grades && student.grades.length > 0;
                                 const total = student.total;
