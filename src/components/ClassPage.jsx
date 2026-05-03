@@ -17,6 +17,8 @@ function ClassPage() {
 
     const [sortType, setSortType] = useState("nome")
     const [search, setSearch] = useState("");
+    const [debouncedSearch, setDeboucedSearch] = useState("");
+
     const [statusFilter, setStatusFilter] = useState("todos");
 
     useEffect(() => {
@@ -61,6 +63,15 @@ function ClassPage() {
 
         fetchData();
     }, [id]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDeboucedSearch(search);
+        }, 300);
+
+        return () => clearTimeout(timer);
+
+    }, [search]);
 
     async function handleCreateStudent() {
         if (!newStudentName.trim() || !newStudentMatricula.trim()) {
@@ -194,9 +205,9 @@ function ClassPage() {
     const filteredStudents = useMemo(() => {
         let filtered = [...processedStudents];
 
-        if (search.trim() !== "") {
+        if (debouncedSearch.trim() !== "") {
             filtered = filtered.filter((student) =>
-                student.nome.toLowerCase().includes(search.toLowerCase())
+                student.nome.toLowerCase().includes(debouncedSearch.toLowerCase())
             );
         }
 
