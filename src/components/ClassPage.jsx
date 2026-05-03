@@ -241,7 +241,34 @@ function ClassPage() {
         }
 
         return filtered;
-    }, [processedStudents, search, statusFilter, sortType, classData]);
+    }, [processedStudents, statusFilter, sortType, classData, debouncedSearch]);
+
+    const classStats = useMemo(() => {
+        if (processedStudents.length === 0) {
+            return {
+                mediaGeral: 0,
+                abaixoDaMedia: 0
+            }
+        }
+
+        let somaMedia = 0;
+        let abaixo = 0;
+
+        processedStudents.forEach((student) => {
+            somaMedia += student.media;
+
+            if (student.grades?.length > 0 && student.media < classData.mediaMinima) {
+                abaixo++;
+            }
+        });
+
+        const mediaGeral = somaMedia / processedStudents.length;
+
+        return {
+            mediaGeral,
+            abaixoDaMedia: abaixo
+        };
+    }, [processedStudents, classData]);
 
     if (!classData) {
         return (
@@ -261,18 +288,21 @@ function ClassPage() {
                 <h2>Matéria: {classData.nome}</h2>
                 <p>Aqui você poderá gerenciar a turma.</p>
 
-                <button className="btn btn-primary mb-3" onClick={() => setShowModal(true)}>
+                <button
+                    className="btn btn-primary mb-3 btn-sm"
+                    onClick={() => setShowModal(true)}
+                >
                     + Adicionar Aluno
                 </button>
 
                 <button
-                    className="btn btn-success mb-3 ms-2"
+                    className="btn btn-success mb-3 ms-2 btn-sm"
                     onClick={() => setShowGradeModal(true)}
                 >
                     + Lançar Notas
                 </button>
 
-                <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
 
                     <h4 className="mb-0">Alunos</h4>
 
@@ -312,6 +342,10 @@ function ClassPage() {
                     </div>
                 </div>
 
+                <p className="text-muted mb-2">
+                    {filteredStudents.length} aluno(s) encontrado(s)
+                </p>
+
                 <div className="table-container"
                     style={{ "--cols": classData.atividades.length + 5 }}>
 
@@ -333,10 +367,10 @@ function ClassPage() {
 
                     {/* BODY */}
                     <div className="table-body">
-                        {students.length === 0 ? (
+                        {filteredStudents.length === 0 ? (
                             <div className="table-row">
                                 <div style={{ gridColumn: "1 / -1", textAlign: "center" }}>
-                                    Nenhum aluno cadastrado
+                                    Nenhum aluno encontrado com os filtros aplicados
                                 </div>
                             </div>
                         ) : (
@@ -388,6 +422,36 @@ function ClassPage() {
                                 );
                             })
                         )}
+                    </div>
+
+                </div>
+
+                <div className="mt-4 p-3 border rounded bg-light">
+
+                    <div className="d-flex justify-content-between align-items-center mb-2 flex-wrap">
+
+                        <strong>
+                            Média geral da turma: {classStats.mediaGeral.toFixed(1)}%
+                        </strong>
+
+                        <span className="text-danger">
+                            {classStats.abaixoDaMedia} aluno(s) abaixo da média
+                        </span>
+
+                    </div>
+
+                    {/* Barra visual */}
+                    <div className="progress" style={{ height: "20px" }}>
+                        <div
+                            className={`progress-bar ${classStats.mediaGeral >= classData.mediaMinima
+                                    ? "bg-success"
+                                    : "bg-danger"
+                                }`}
+                            role="progressbar"
+                            style={{ width: `${classStats.mediaGeral}%` }}
+                        >
+                            {classStats.mediaGeral.toFixed(0)}%
+                        </div>
                     </div>
 
                 </div>
