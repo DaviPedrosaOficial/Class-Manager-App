@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
+import Institution from "./Institution";
 
 const ClassSchema = new mongoose.Schema({
     nome: { type: String, required: true },
     atividades: [{ nomeAtividade: String, peso: Number }],
-    mediaMinima: {type: Number, required: true},
+    mediaMinima: { type: Number, required: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    institutionId: { type: mongoose.Schema.Types.ObjectId, ref: "Institution", required: true },
     createAt: { type: Date, default: Date.now }
 });
 

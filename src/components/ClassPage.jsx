@@ -306,6 +306,7 @@ function ClassPage() {
 
                     <h4 className="mb-0">Alunos</h4>
 
+                    {/* Seção de busca & derivados */}
                     <div className="d-flex gap-2 align-items-center flex-wrap">
 
                         <input
@@ -346,6 +347,7 @@ function ClassPage() {
                     {filteredStudents.length} aluno(s) encontrado(s)
                 </p>
 
+                {/* Tabela de Alunos */}
                 <div className="table-container"
                     style={{ "--cols": classData.atividades.length + 5 }}>
 
@@ -423,9 +425,9 @@ function ClassPage() {
                             })
                         )}
                     </div>
-
                 </div>
 
+                {/* Div Média da turma */}
                 <div className="mt-4 p-3 border rounded bg-light">
 
                     <div className="d-flex justify-content-between align-items-center mb-2 flex-wrap">
@@ -434,29 +436,36 @@ function ClassPage() {
                             Média geral da turma: {classStats.mediaGeral.toFixed(1)}%
                         </strong>
 
-                        <span className="text-danger">
+                        <span className={`fw-bold ${classStats.abaixoDaMedia > 0 ? "text-danger" : "text-success"
+                            }`}>
                             {classStats.abaixoDaMedia} aluno(s) abaixo da média
                         </span>
 
                     </div>
 
                     {/* Barra visual */}
-                    <div className="progress" style={{ height: "20px" }}>
-                        <div
-                            className={`progress-bar ${classStats.mediaGeral >= classData.mediaMinima
-                                    ? "bg-success"
-                                    : "bg-danger"
-                                }`}
-                            role="progressbar"
-                            style={{ width: `${classStats.mediaGeral}%` }}
-                        >
-                            {classStats.mediaGeral.toFixed(0)}%
-                        </div>
+                    <div
+                        className="progress-bar"
+                        role="progressbar"
+                        style={{
+                            width: `${classStats.mediaGeral}%`,
+                            background: classStats.mediaGeral >= classData.mediaMinima
+                                ? "linear-gradient(90deg, #198754, #20c997)"
+                                : "linear-gradient(90deg, #dc3545, #ff6b6b)",
+                            transition: "width 0.5s ease"
+                        }}
+                    >
+                        {classStats.mediaGeral.toFixed(0)}%
                     </div>
+
+                    <p className="mb-0 mt-2 text-muted">
+                        {classStats.mediaGeral >= classData.mediaMinima
+                            ? "A turma está acima da média mínima"
+                            : "A turma está abaixo da média mínima"}
+                    </p>
 
                 </div>
             </div>
-
 
             {/* Modal Adicionar Aluno */}
             {showModal && (
