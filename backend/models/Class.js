@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import Institution from "./Institution";
 
 const ClassSchema = new mongoose.Schema({
     nome: { type: String, required: true },
