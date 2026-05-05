@@ -2,6 +2,7 @@ import Layout from "./Layout";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../services/api";
+import { toast } from "react-toastify";
 
 function InstitutionPage() {
     const navigate = useNavigate();
@@ -10,8 +11,13 @@ function InstitutionPage() {
     const [classes, setClasses] = useState([]);
     const [institution, setInstitution] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [newClassName, setNewClassName] = useState("");
+
+    const [materia, setMateria] = useState("");
+    const [nomeTurma, setNomeTurma] = useState("");
+    const [turno, setTurno] = useState("");
     const [mediaMinima, setMediaMinima] = useState("");
+
+    const [editingClass, setEditingClass] = useState(null);
 
     const [atividades, setAtividades] = useState([
         { nomeAtividade: "", peso: "" }
@@ -30,7 +36,7 @@ function InstitutionPage() {
                 setInstitution(institutionData);
 
             } catch (error) {
-                console.error("Erro ao carregar dados:", error.message);
+                toast.error("Erro ao carregar dados:", error.message);
             }
         }
 
@@ -39,8 +45,8 @@ function InstitutionPage() {
 
     // CRIAR TURMA
     async function handleCreateClass() {
-        if (!newClassName.trim()) {
-            alert("O nome da turma é obrigatório!");
+        if (!materia || !nomeTurma || !turno) {
+            toast.error("Preencha todos os campos!");
             return;
         }
 
@@ -52,28 +58,49 @@ function InstitutionPage() {
         );
 
         if (atividadesValidas.length === 0) {
-            alert("Adicione pelo menos uma atividade!");
+            toast.error("Adicione pelo menos uma atividade!");
             return;
         }
 
         try {
             const data = await api.post("/classes", {
-                nome: newClassName.trim(),
-                atividades: atividadesValidas,
-                mediaMinima: Number(mediaMinima),
+                materia,
+                nomeTurma,
+                turno,
+                atividades,
+                mediaMinima,
                 institutionId: id
             });
 
             setClasses((prev) => [...prev, data]);
 
             // reset
-            setNewClassName("");
+            setMateria("");
+            setNomeTurma("");
+            setTurno("");
             setMediaMinima("");
             setAtividades([{ nomeAtividade: "", peso: "" }]);
             setShowModal(false);
 
+            toast.success("Turma criada com sucesso!");
+
         } catch (error) {
-            console.error("Erro ao criar turma:", error.message);
+            toast.error(error.message || "Erro ao criar turma");
+        }
+    }
+
+    async function handleDeleteClass(classId) {
+        if (!window.confirm("Remover turma?")) return;
+
+        try {
+            await api.delete(`/classes/${classId}`);
+
+            setClasses((prev) => prev.filter((c) => c._id !== classId));
+
+            toast.success("Turma deletada com sucesso!")
+
+        } catch (error) {
+            toast.error(`Erro ao deletar a turma. Erro: ${error}`);
         }
     }
 
@@ -118,11 +145,37 @@ function InstitutionPage() {
                                 {classes.map((c) => (
                                     <li
                                         key={c._id}
-                                        className="list-group-item"
+                                        className="list-group-item d-flex justify-content-between align-items-center"
                                         style={{ cursor: "pointer" }}
                                         onClick={() => navigate(`/classes/${c._id}`)}
                                     >
-                                        {c.nome}
+                                        <div>
+                                            <strong>Materia: {c.materia}</strong>
+                                            <div>{c.nomeTurma}</div>
+                                            <small>Turno: {c.turno}</small>
+                                        </div>
+
+                                        <div className="d-flex gap-2">
+                                            <button
+                                                className="btn btn-sm btn-warning"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setEditingClass(c);
+                                                }}
+                                            >
+                                                ✏️
+                                            </button>
+
+                                            <button
+                                                className="btn btn-sm btn-danger"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDeleteClass(c._id);
+                                                }}
+                                            >
+                                                🗑
+                                            </button>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
@@ -148,14 +201,34 @@ function InstitutionPage() {
                                         />
                                     </div>
 
+                                    {/* Inputs requeridos para a criação de Turma */}
                                     <div className="modal-body">
                                         <input
                                             type="text"
                                             className="form-control mb-2"
-                                            placeholder="Nome da turma"
-                                            value={newClassName}
-                                            onChange={(e) => setNewClassName(e.target.value)}
+                                            placeholder="Matéria"
+                                            value={materia}
+                                            onChange={(e) => setMateria(e.target.value)}
                                         />
+
+                                        <input
+                                            type="text"
+                                            className="form-control mb-2"
+                                            placeholder="Nome da turma"
+                                            value={nomeTurma}
+                                            onChange={(e) => setNomeTurma(e.target.value)}
+                                        />
+
+                                        <select
+                                            className="form-control mb-3"
+                                            value={turno}
+                                            onChange={(e) => setTurno(e.target.value)}
+                                        >
+                                            <option value="">Selecione o turno</option>
+                                            <option value="Manhã">Manhã</option>
+                                            <option value="Tarde">Tarde</option>
+                                            <option value="Noite">Noite</option>
+                                        </select>
 
                                         <input
                                             type="number"

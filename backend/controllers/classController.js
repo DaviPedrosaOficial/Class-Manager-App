@@ -15,10 +15,10 @@ export const getClasses = async (req, res) => {
 
 export const createClass = async (req, res) => {
     try {
-        const { nome, atividades, mediaMinima, institutionId } = req.body;
+        const { materia, nomeTurma, turno, atividades, mediaMinima, institutionId } = req.body;
 
-        if (!nome) {
-            return res.status(400).json({ message: "O nome da turma é obrigatório" });
+        if (!materia || !nomeTurma || !turno) {
+            return res.status(400).json({ message: "Dados da turma incompletos" });
         }
 
         if (!mediaMinima){
@@ -30,7 +30,9 @@ export const createClass = async (req, res) => {
         }
 
         const newClass = await Class.create({
-            nome,
+            materia,
+            nomeTurma,
+            turno,
             atividades,
             mediaMinima,
             institutionId,
@@ -59,3 +61,32 @@ export const getClassById = async (req, res) => {
         res.status(500).json({ message: "Erro ao buscar turma" });
     }
 };
+
+export const deleteClass = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        await Class.findByIdAndDelete(id);
+
+        res.json({ message: "Turma deletada com sucesso!" });
+    } catch (error) {
+        res.status(500).json({ message: `Erro ao deletar a turma. Erro: ${error}` });
+    }
+}
+
+export const updateClass = async (req, res) => {
+    try {
+        const { Id } = req.params;
+
+        const updated = await Class.findByIdAndUpdate(
+            Id,
+            req.body,
+            { new: true }
+        );
+
+        res.json(updated);
+        
+    } catch (error) {
+        res.status(500).json({ message: `Erro ao atualizar a turma. Erro: ${error}` });
+    }
+}
