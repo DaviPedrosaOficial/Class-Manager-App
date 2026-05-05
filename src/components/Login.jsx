@@ -29,7 +29,7 @@ function Login() {
             localStorage.setItem("token", data.token);
 
             alert("Login realizado!");
-            navigate("/dashboard");
+            navigate("/mainpage");
 
         } catch (error) {
             alert(error.message);

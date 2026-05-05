@@ -8,14 +8,14 @@ function Navbar() {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
             <div className="container-fluid px-4">
-                <Link className="navbar-brand" to={token ? "/dashboard" : "/"}>ClassManager</Link>
+                <Link className="navbar-brand" to={token ? "/mainpage" : "/"}>ClassManager</Link>
 
                 <div className="collapse navbar-collapse">
                     <ul className="navbar-nav ms-auto">
                         {token ? (
                             <>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/dashboard">Dashboard</Link>
+                                    <Link className="nav-link" to="/mainpage">Main page</Link>
                                 </li>
                                 <li className="nav-item">
                                     <button

@@ -4,7 +4,7 @@ import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", authMiddleware, getClasses);
+router.get("/institution/:institutionId", authMiddleware, getClasses);
 router.post("/", authMiddleware, createClass);
 router.get("/:id", authMiddleware, getClassById)
 

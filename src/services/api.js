@@ -1,5 +1,27 @@
 const API_URL = "http://localhost:3000/api";
 
+function getToken() {
+    return localStorage.getItem("token");
+}
+
+async function request(endpoint, options = {}) {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`
+        },
+        ...options
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Erro na requisição");
+    }
+
+    return data;
+}
+
 export const registerUser = async (userData) => {
     try {
         const response = await fetch(`${API_URL}/users/register`, {
@@ -23,4 +45,25 @@ export const registerUser = async (userData) => {
         console.error("Error registering user:", error);
         throw error;
     }
+};
+
+export const api = {
+    get: (endpoint) => request(endpoint),
+
+    post: (endpoint, body) =>
+        request(endpoint, {
+            method: "POST",
+            body: JSON.stringify(body)
+        }),
+
+    put: (endpoint, body) =>
+        request(endpoint, {
+            method: "PUT",
+            body: JSON.stringify(body)
+        }),
+
+    delete: (endpoint) =>
+        request(endpoint, {
+            method: "DELETE"
+        })
 };

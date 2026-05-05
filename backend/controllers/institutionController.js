@@ -26,3 +26,20 @@ export const createInstitution =  async (req, res) => {
         res.status(500).json({ message: `Erro ao criar a instituição. Error: ${error} ` })
     }
 };
+
+export const getInstitutionById = async (req, res) => {
+    try {
+        const institution = await Institution.findOne({
+            _id: req.params.id,
+            userId: req.user.userId
+        });
+
+        if (!institution) {
+            return res.status(404).json({ message: "Instituição não encontrada" });
+        }
+
+        res.json(institution);
+    } catch (error) {
+        res.status(500).json({ message: `Erro ao buscar instituição. Error: ${error}` });
+    }
+};

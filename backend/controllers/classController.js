@@ -2,7 +2,10 @@ import Class from "../models/Class.js";
 
 export const getClasses = async (req, res) => {
     try {
-        const classes = await Class.find({ userId: req.user.userId });
+        const classes = await Class.find({ 
+            userId: req.user.userId,
+            institutionId: req.params.institutionId
+        });
         res.json(classes);
     } catch (error) {
         console.error(error);
@@ -12,7 +15,7 @@ export const getClasses = async (req, res) => {
 
 export const createClass = async (req, res) => {
     try {
-        const { nome, atividades, mediaMinima } = req.body;
+        const { nome, atividades, mediaMinima, institutionId } = req.body;
 
         if (!nome) {
             return res.status(400).json({ message: "O nome da turma é obrigatório" });
@@ -22,10 +25,15 @@ export const createClass = async (req, res) => {
             return res.status(400).json({ message: "Informe a média mínima" });
         }
 
+        if (!institutionId) {
+            return res.status(400).json({ message: "institutionId é obrigatório" });
+        }
+
         const newClass = await Class.create({
             nome,
             atividades,
             mediaMinima,
+            institutionId,
             userId: req.user.userId
         });
 
