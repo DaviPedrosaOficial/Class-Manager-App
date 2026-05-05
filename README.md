@@ -154,21 +154,30 @@ http://localhost:5173
 
 Você pode usar:
 
-### 🖥️ Local
+### ☁️ MongoDB Atlas (Recomendado)
 
-- Instale MongoDB
-- Execute:
+- Mais simples e utilizado em projetos reais
+
+- Acesse:
+  https://www.mongodb.com/atlas
+
+- Crie uma conta
+- Crie um cluster gratuito
+- Copie a connection string
+- Cole no `.env` como `MONGO_URI`
+
+---
+
+### 🖥️ MongoDB Local (Opcional)
+
+- Instale o MongoDB:
+  https://www.mongodb.com/try/download/community
+
+- Inicie o servidor:
 
 ```bash
 mongod
 ```
-
-### ☁️ Atlas
-
-- https://www.mongodb.com/atlas
-- Crie cluster
-- Copie a string
-- Cole no `.env`
 
 ---
 
@@ -201,10 +210,11 @@ mongod
 
 ## 💡 Melhorias Futuras
 
-- Edição e exclusão de alunos
-- Dashboard com gráficos
-- Ranking da turma
-- Melhor responsividade mobile
+- 📊 Relatórios por instituição
+- 📚 Relatórios por matéria (visão global entre turmas)
+- 📈 Análise de desempenho mais avançada
+- 🎨 Melhorias de UX/UI (feedback visual, animações, experiência do usuário)
+- 📱 Melhor responsividade para dispositivos móveis
 
 ---
 
@@ -217,3 +227,7 @@ Davi Pedrosa
 ## 📄 Licença
 
 MIT
+
+```
+
+```
