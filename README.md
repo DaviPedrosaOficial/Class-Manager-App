@@ -214,7 +214,6 @@ mongod
 - 📚 Relatórios por matéria (visão global entre turmas)
 - 📈 Análise de desempenho mais avançada
 - 🎨 Melhorias de UX/UI (feedback visual, animações, experiência do usuário)
-- 📱 Melhor responsividade para dispositivos móveis
 
 ---
 
@@ -227,7 +226,3 @@ Davi Pedrosa
 ## 📄 Licença
 
 MIT
-
-```
-
-```
