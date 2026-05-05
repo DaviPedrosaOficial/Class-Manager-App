@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import Layout from "./Layout";
 import { api } from "../services/api"
+import { toast } from "react-toastify";
 
 function ClassPage() {
     const { id } = useParams();
@@ -20,6 +21,7 @@ function ClassPage() {
     const [sortType, setSortType] = useState("nome")
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDeboucedSearch] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const [statusFilter, setStatusFilter] = useState("todos");
 
@@ -36,7 +38,7 @@ function ClassPage() {
                 setStudents(studentData);
 
             } catch (error) {
-                console.error("Erro geral:", error.message);
+                toast.error("Erro geral:", error.message);
             }
         };
 
@@ -55,33 +57,42 @@ function ClassPage() {
 
     async function handleCreateStudent() {
         if (!newStudentName.trim() || !newStudentMatricula.trim()) {
-            alert("Nome e matrícula são obrigatórios!");
+            toast.error("Nome e matrícula são obrigatórios!");
             return;
         }
 
         try {
+            setLoading(true);
+
             const createData = await api.post(`/classes/${id}/students`, {
                 nome: newStudentName,
                 matricula: newStudentMatricula
             });
 
             setStudents((prev) => [...prev, createData]);
+
             setNewStudentName("");
             setNewStudentMatricula("");
             setShowModal(false);
 
+            toast.success("Aluno criado com sucesso!");
+
         } catch (error) {
-            console.error("Erro criar aluno:", error.message);
+            toast.error("Erro criar aluno:", error.message);
+        } finally {
+            setLoading(false);
         }
     }
 
     async function handleUpdateStudent() {
         if (!editingStudent.nome.trim() || !editingStudent.matricula.trim()) {
-            alert("Campos obrigatórios!");
+            toast.error("Campos obrigatórios!");
             return;
         }
 
         try {
+            setLoading(true);
+
             const updated = await api.put(
                 `/classes/${id}/students/${editingStudent._id}`,
                 {
@@ -93,24 +104,29 @@ function ClassPage() {
             setStudents((prev) => prev.map((s) => s._id === updated._id ? updated : s));
 
             setEditingStudent(null);
+            toast.success("Aluno atualizado!");
 
         } catch (error) {
-            console.error("Erro ao atualizar estudante", error.message);
+            toast.error("Erro ao atualizar estudante", error.message);
+        } finally {
+            setLoading(false);
         }
     }
 
     async function handleDeleteStudent(studentId) {
-        const confirmDelete = window.confirm("Tem certeza que deseja remover o aluno?");
-
-        if (!confirmDelete) return;
+        if (!window.confirm("Tem certeza que deseja remover o aluno?")) return;
 
         try {
             await api.delete(`/classes/${id}/students/${studentId}`);
 
-            setStudents((prev) => prev.filter((student) => student._id !== studentId));
+            setStudents((prev) =>
+                prev.filter((student) => student._id !== studentId)
+            );
+
+            toast.success("Aluno removido!");
 
         } catch (error) {
-            console.error("Erro ao deletar aluno:", error.message);
+            toast.error("Erro ao remover aluno");
         }
     }
 
@@ -123,6 +139,8 @@ function ClassPage() {
 
     async function handleSubmitGrades() {
         try {
+            setLoading(true);
+
             const gradeData = await api.put(`/classes/${id}/grades`, {
                 atividadeId: selectedActivity,
                 grades: gradeInput
@@ -134,8 +152,12 @@ function ClassPage() {
             setGradeInput({});
             setSelectedActivity("");
 
+            toast.success("Notas lançadas com sucesso!");
+
         } catch (error) {
-            console.error("Erro lançar notas:", error.message);
+            toast.error("Erro lançar notas:", error.message);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -522,8 +544,9 @@ function ClassPage() {
                                     <button
                                         className="btn btn-primary"
                                         onClick={handleCreateStudent}
+                                        disabled={loading}
                                     >
-                                        Criar
+                                        {loading ? "salvando..." : "Criar"}
                                     </button>
                                 </div>
 
@@ -604,9 +627,9 @@ function ClassPage() {
                                     <button
                                         className="btn btn-success"
                                         onClick={handleSubmitGrades}
-                                        disabled={!selectedActivity || Object.keys(gradeInput).length === 0}
+                                        disabled={loading || !selectedActivity}
                                     >
-                                        Salvar Notas
+                                        {loading ? "Salvando..." : "Salvar Notas"}
                                     </button>
                                 </div>
                             </div>
@@ -671,8 +694,9 @@ function ClassPage() {
                                     <button
                                         className="btn btn-primary"
                                         onClick={handleUpdateStudent}
+                                        disabled={loading}
                                     >
-                                        Salvar
+                                        {loading ? "Salvando..." : "Salvar"}
                                     </button>
                                 </div>
 
