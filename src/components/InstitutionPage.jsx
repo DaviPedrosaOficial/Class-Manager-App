@@ -89,6 +89,38 @@ function InstitutionPage() {
         }
     }
 
+    async function handleUpdateClass() {
+        if (!nomeTurma || !materia || !turno) {
+            toast.error("Preencha todos os campos!")
+            return;
+        }
+
+        try {
+            const updated = await api.put(`/classes/${editingClass._id}`, {
+                materia,
+                nomeTurma,
+                turno,
+                atividades,
+                mediaMinima
+            });
+
+            setClasses((prev) => prev.map((c) => c._id === updated._id ? updated : c));
+
+            toast.success("Turma atualizada com sucesso!");
+
+            // reset
+            setEditingClass(null);
+            setMateria("");
+            setNomeTurma("");
+            setTurno("");
+            setMediaMinima("");
+            setAtividades([{ nomeAtividade: "", peso: "" }]);
+            setShowModal(false);
+        } catch (error) {
+            toast.error(error.message || "Erro ao atualizar a turma");
+        }
+    }
+
     async function handleDeleteClass(classId) {
         if (!window.confirm("Remover turma?")) return;
 
@@ -160,7 +192,16 @@ function InstitutionPage() {
                                                 className="btn btn-sm btn-warning"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
+
                                                     setEditingClass(c);
+
+                                                    setMateria(c.materia);
+                                                    setNomeTurma(c.nomeTurma);
+                                                    setTurno(c.turno);
+                                                    setMediaMinima(c.mediaMinima || "");
+                                                    setAtividades(c.atividades || []);
+
+                                                    setShowModal(true);
                                                 }}
                                             >
                                                 ✏️
@@ -194,10 +235,13 @@ function InstitutionPage() {
                                 <div className="modal-content">
 
                                     <div className="modal-header">
-                                        <h5>Nova Turma</h5>
+                                        <h5>{editingClass ? "Editar turma" : "Nova Turma"}</h5>
                                         <button
                                             className="btn-close"
-                                            onClick={() => setShowModal(false)}
+                                            onClick={() => {
+                                                setShowModal(false);
+                                                setEditingClass(null);
+                                            }}
                                         />
                                     </div>
 
@@ -275,16 +319,19 @@ function InstitutionPage() {
                                     <div className="modal-footer">
                                         <button
                                             className="btn btn-secondary"
-                                            onClick={() => setShowModal(false)}
+                                            onClick={() => {
+                                                setShowModal(false);
+                                                setEditingClass(null);
+                                            }}
                                         >
                                             Cancelar
                                         </button>
 
                                         <button
                                             className="btn btn-primary"
-                                            onClick={handleCreateClass}
+                                            onClick={editingClass ? handleUpdateClass : handleCreateClass}
                                         >
-                                            Criar
+                                            {editingClass ? "Salvar" : "Criar"}
                                         </button>
                                     </div>
 
