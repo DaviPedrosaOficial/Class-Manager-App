@@ -100,6 +100,24 @@ export const updateStudentGrades = async (req, res) => {
     }
 };
 
+export const updateStudent = async (req, res) => {
+    try {
+        const { studentId } = req.params;
+        const { nome, matricula } = req.body;
+
+        const updated = await Student.findByIdAndUpdate(
+            studentId,
+            { nome, matricula },
+            { new: true }
+        );
+
+        res.json(updated);
+    
+    } catch (error) {
+        res.status(500).json({ message: `Erro ao atualizar o aluno. Erro: ${error} ` });
+    }
+}
+
 export const deleteStudent = async (req, res) => {
     try {
         const { studentId } = req.params;
@@ -107,7 +125,7 @@ export const deleteStudent = async (req, res) => {
         await Student.findByIdAndDelete(studentId);
 
         res.json({ message: "Aluno removido com sucesso" })
-        
+
     } catch (error) {
         res.status(500).json({ message: `Erro ao tentar deletar o aluno. Error ${error}` });
     }

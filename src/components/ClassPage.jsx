@@ -11,6 +11,7 @@ function ClassPage() {
     const [showModal, setShowModal] = useState(false);
     const [newStudentName, setNewStudentName] = useState("");
     const [newStudentMatricula, setNewStudentMatricula] = useState("");
+    const [editingStudent, setEditingStudent] = useState(null);
 
     const [showGradeModal, setShowGradeModal] = useState(false);
     const [selectedActivity, setSelectedActivity] = useState("");
@@ -71,6 +72,30 @@ function ClassPage() {
 
         } catch (error) {
             console.error("Erro criar aluno:", error.message);
+        }
+    }
+
+    async function handleUpdateStudent() {
+        if (!editingStudent.nome.trim() || !editingStudent.matricula.trim()) {
+            alert("Campos obrigatórios!");
+            return;
+        }
+
+        try {
+            const updated = await api.put(
+                `/classes/${id}/students/${editingStudent._id}`,
+                {
+                    nome: editingStudent.nome,
+                    matricula: editingStudent.matricula
+                }
+            );
+
+            setStudents((prev) => prev.map((s) => s._id === updated._id ? updated : s));
+
+            setEditingStudent(null);
+
+        } catch (error) {
+            console.error("Erro ao atualizar estudante", error.message);
         }
     }
 
@@ -387,7 +412,14 @@ function ClassPage() {
 
                                         <div>{student.matricula}</div>
 
-                                        <div>
+                                        <div className="d-flex gap-1">
+                                            <button
+                                                className="btn btn-sm btn-warning"
+                                                onClick={() => setEditingStudent(student)}
+                                            >
+                                                ✏️
+                                            </button>
+
                                             <button
                                                 className="btn btn-sm btn-danger"
                                                 onClick={() => handleDeleteStudent(student._id)}
@@ -577,6 +609,73 @@ function ClassPage() {
                                         Salvar Notas
                                     </button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {/* Modal Editar Aluno */}
+            {editingStudent && (
+                <>
+                    <div className="modal-backdrop fade show"></div>
+
+                    <div className="modal fade show d-block">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+
+                                <div className="modal-header">
+                                    <h5>Editar Aluno</h5>
+                                    <button
+                                        className="btn-close"
+                                        onClick={() => setEditingStudent(null)}
+                                    />
+                                </div>
+
+                                <div className="modal-body">
+
+                                    <input
+                                        type="text"
+                                        className="form-control mb-3"
+                                        value={editingStudent.nome}
+                                        onChange={(e) =>
+                                            setEditingStudent({
+                                                ...editingStudent,
+                                                nome: e.target.value
+                                            })
+                                        }
+                                    />
+
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={editingStudent.matricula}
+                                        onChange={(e) =>
+                                            setEditingStudent({
+                                                ...editingStudent,
+                                                matricula: e.target.value
+                                            })
+                                        }
+                                    />
+
+                                </div>
+
+                                <div className="modal-footer">
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => setEditingStudent(null)}
+                                    >
+                                        Cancelar
+                                    </button>
+
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={handleUpdateStudent}
+                                    >
+                                        Salvar
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
                     </div>
