@@ -28,7 +28,7 @@ function ClassPage() {
             try {
                 const [classData, studentData] = await Promise.all([
                     api.get(`/classes/${id}`),
-                    api.get(`/students/${id}`)
+                    api.get(`/classes/${id}/students`)
                 ]);
 
                 setClassData(classData);
@@ -59,7 +59,7 @@ function ClassPage() {
         }
 
         try {
-            const createData = await api.post(`/students/${id}`, {
+            const createData = await api.post(`/classes/${id}/students`, {
                 nome: newStudentName,
                 matricula: newStudentMatricula
             });
@@ -83,7 +83,7 @@ function ClassPage() {
 
     async function handleSubmitGrades() {
         try {
-            const gradeData = await api.put(`/students/grades/${id}`, {
+            const gradeData = await api.put(`/classes/${id}/grades`, {
                 atividadeId: selectedActivity,
                 grades: gradeInput
             });
@@ -322,7 +322,7 @@ function ClassPage() {
                         {filteredStudents.length === 0 ? (
                             <div className="table-row">
                                 <div style={{ gridColumn: "1 / -1", textAlign: "center" }}>
-                                    Nenhum aluno encontrado com os filtros aplicados
+                                    Nenhum aluno encontrado
                                 </div>
                             </div>
                         ) : (

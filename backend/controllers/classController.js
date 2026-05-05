@@ -4,7 +4,7 @@ export const getClasses = async (req, res) => {
     try {
         const classes = await Class.find({ 
             userId: req.user.userId,
-            institutionId: req.params.institutionId
+            institutionId: req.params.id
         });
         res.json(classes);
     } catch (error) {

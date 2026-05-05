@@ -22,7 +22,7 @@ function InstitutionPage() {
         async function fetchData() {
             try {
                 const [classesData, institutionData] = await Promise.all([
-                    api.get(`/classes/institution/${id}`),
+                    api.get(`/institutions/${id}/classes`),
                     api.get(`/institutions/${id}`)
                 ]);
 

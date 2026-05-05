@@ -1,6 +1,7 @@
 import Layout from "./Layout";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../services/api";
 
 function MainPage() {
     const navigate = useNavigate();
@@ -11,16 +12,12 @@ function MainPage() {
 
     useEffect(() => {
         async function fetchInstitutions() {
-            const token = localStorage.getItem("token");
-
-            const response = await fetch("http://localhost:3000/api/institutions", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            const data = await response.json();
-            setInstitutions(data);
+            try {
+                const data = await api.get("/institutions");
+                setInstitutions(data);
+            } catch (error) {
+                console.error(error.message);
+            }
         }
 
         fetchInstitutions();
@@ -29,22 +26,18 @@ function MainPage() {
     async function handleCreateInstitution() {
         if (!newInstitution.trim()) return;
 
-        const token = localStorage.getItem("token");
+        try {
+            const data = await api.post("/institutions", {
+                nome: newInstitution
+            });
 
-        const response = await fetch("http://localhost:3000/api/institutions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({ nome: newInstitution })
-        });
+            setInstitutions((prev) => [...prev, data]);
+            setNewInstitution("");
+            setShowModal(false);
 
-        const data = await response.json();
-
-        setInstitutions((prev) => [...prev, data]);
-        setNewInstitution("");
-        setShowModal(false);
+        } catch (error) {
+            console.error(error.message);
+        }
     }
 
     return (

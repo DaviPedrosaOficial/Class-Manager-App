@@ -3,7 +3,7 @@ import Class from "../models/Class.js";
 
 export const getStudentsByClassId = async (req, res) => {
     try {
-        const students = await Student.find({ classId: req.params.classId });
+        const students = await Student.find({ classId: req.params.id });
         res.json(students);
     
     } catch (error) {
@@ -20,7 +20,7 @@ export const createStudent = async (req, res) => {
             return res.status(400).json({ message: "Todos os campos são obrigatórios" });
         }
 
-        const classData = await Class.findById(req.params.classId);
+        const classData = await Class.findById(req.params.id);
 
         if (!classData) {
             return res.status(404).json({ message: "Turma não encontrada" });
@@ -29,7 +29,7 @@ export const createStudent = async (req, res) => {
         const newStudent = await Student.create({
             nome,
             matricula,
-            classId: req.params.classId,
+            classId: req.params.id,
             grades: []
         });
 
@@ -49,9 +49,9 @@ export const updateStudentGrades = async (req, res) => {
             return res.status(400).json({ message: "Dados inválidos" });
         }
 
-        const students = await Student.find({ classId: req.params.classId });
+        const students = await Student.find({ classId: req.params.id });
 
-        const classData = await Class.findById(req.params.classId);
+        const classData = await Class.findById(req.params.id);
 
         const atividade = classData.atividades.find(
             (a) => a._id.toString() === atividadeId
@@ -90,7 +90,7 @@ export const updateStudentGrades = async (req, res) => {
             }
         }
 
-        const updatedStudents = await Student.find({ classId: req.params.classId });
+        const updatedStudents = await Student.find({ classId: req.params.id });
 
         res.json(updatedStudents);
 
