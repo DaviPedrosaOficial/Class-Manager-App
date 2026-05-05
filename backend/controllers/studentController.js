@@ -99,3 +99,16 @@ export const updateStudentGrades = async (req, res) => {
         res.status(500).json({ message: "Erro ao atualizar notas" });
     }
 };
+
+export const deleteStudent = async (req, res) => {
+    try {
+        const { studentId } = req.params;
+
+        await Student.findByIdAndDelete(studentId);
+
+        res.json({ message: "Aluno removido com sucesso" })
+        
+    } catch (error) {
+        res.status(500).json({ message: `Erro ao tentar deletar o aluno. Error ${error}` });
+    }
+}

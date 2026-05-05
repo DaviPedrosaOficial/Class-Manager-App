@@ -74,6 +74,21 @@ function ClassPage() {
         }
     }
 
+    async function handleDeleteStudent(studentId) {
+        const confirmDelete = window.confirm("Tem certeza que deseja remover o aluno?");
+
+        if (!confirmDelete) return;
+
+        try {
+            await api.delete(`/classes/${id}/students/${studentId}`);
+
+            setStudents((prev) => prev.filter((student) => student._id !== studentId));
+
+        } catch (error) {
+            console.error("Erro ao deletar aluno:", error.message);
+        }
+    }
+
     function handleGradeChange(studentId, value) {
         setGradeInput((prev) => ({
             ...prev,
@@ -299,7 +314,7 @@ function ClassPage() {
 
                 {/* Tabela de Alunos */}
                 <div className="table-container"
-                    style={{ "--cols": classData.atividades.length + 5 }}>
+                    style={{ "--cols": classData.atividades.length + 6 }}>
 
                     {/* HEADER */}
                     <div className="table-header">
@@ -314,6 +329,7 @@ function ClassPage() {
                             <div>Total</div>
                             <div>Situação</div>
                             <div>Matrícula</div>
+                            <div>Ações</div>
                         </div>
                     </div>
 
@@ -370,6 +386,15 @@ function ClassPage() {
                                         </div>
 
                                         <div>{student.matricula}</div>
+
+                                        <div>
+                                            <button
+                                                className="btn btn-sm btn-danger"
+                                                onClick={() => handleDeleteStudent(student._id)}
+                                            >
+                                                🗑
+                                            </button>
+                                        </div>
                                     </div>
                                 );
                             })

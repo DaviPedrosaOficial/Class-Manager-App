@@ -1,7 +1,7 @@
 import express from "express";
 import { getClasses, createClass, getClassById } from "../controllers/classController.js";
 
-import { getStudentsByClassId, createStudent, updateStudentGrades } from "../controllers/studentController.js";
+import { getStudentsByClassId, createStudent, updateStudentGrades, deleteStudent } from "../controllers/studentController.js";
 
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 
@@ -15,5 +15,6 @@ router.get("/institution/:institutionId", authMiddleware, getClasses);
 router.get("/:id/students", authMiddleware, getStudentsByClassId);
 router.post("/:id/students", authMiddleware, createStudent);
 router.put("/:id/grades", authMiddleware, updateStudentGrades);
+router.delete("/:id/students/:studentId", authMiddleware, deleteStudent)
 
 export default router;
