@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import Layout from "./Layout";
+import { api } from "../services/api"
 
 function ClassPage() {
     const { id } = useParams();
@@ -23,45 +24,23 @@ function ClassPage() {
 
     useEffect(() => {
         async function fetchData() {
-            const token = localStorage.getItem("token");
 
             try {
-                const classResponse = await fetch(`http://localhost:3000/api/classes/${id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                const [classData, studentData] = await Promise.all([
+                    api.get(`/classes/${id}`),
+                    api.get(`/students/${id}`)
+                ]);
 
-                const classData = await classResponse.json();
-
-                console.log("Dados da classe:", classData);
-
-                if (classResponse.ok) {
-                    setClassData(classData);
-                } else {
-                    console.error("Erro classe:", classData);
-                }
-
-                const studentResponse = await fetch(`http://localhost:3000/api/students/${id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-
-                const studentData = await studentResponse.json();
-
-                if (studentResponse.ok) {
-                    setStudents(studentData);
-                } else {
-                    console.error("Erro alunos:", studentData);
-                }
+                setClassData(classData);
+                setStudents(studentData);
 
             } catch (error) {
-                console.error("Erro geral:", error);
+                console.error("Erro geral:", error.message);
             }
-        }
+        };
 
         fetchData();
+
     }, [id]);
 
     useEffect(() => {
@@ -79,28 +58,20 @@ function ClassPage() {
             return;
         }
 
-        const token = localStorage.getItem("token");
+        try {
+            const createData = await api.post(`/students/${id}`, {
+                nome: newStudentName,
+                matricula: newStudentMatricula
+            });
 
-        const createResponse = await fetch(`http://localhost:3000/api/students/${id}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({ nome: newStudentName, matricula: newStudentMatricula })
-        });
+            setStudents((prev) => [...prev, createData]);
+            setNewStudentName("");
+            setNewStudentMatricula("");
+            setShowModal(false);
 
-        const createData = await createResponse.json();
-
-        if (!createResponse.ok) {
-            console.error("Erro criar aluno:", createData);
-            return;
+        } catch (error) {
+            console.error("Erro criar aluno:", error.message);
         }
-
-        setStudents((prev) => [...prev, createData]);
-        setNewStudentName("");
-        setNewStudentMatricula("");
-        setShowModal(false);
     }
 
     function handleGradeChange(studentId, value) {
@@ -111,42 +82,21 @@ function ClassPage() {
     }
 
     async function handleSubmitGrades() {
-        const token = localStorage.getItem("token");
-
-        const atividade = classData.atividades.find(a => a._id === selectedActivity);
-        const max = atividade?.peso || 0;
-
-        for (let studentId in gradeInput) {
-            if (gradeInput[studentId] > max) {
-                alert("A nota não pode ser maior que o peso da atividade!")
-                return;
-            }
-        }
-
-        const gradeResponse = await fetch(`http://localhost:3000/api/students/grades/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({
+        try {
+            const gradeData = await api.put(`/students/grades/${id}`, {
                 atividadeId: selectedActivity,
                 grades: gradeInput
-            })
-        });
+            });
 
-        const gradeData = await gradeResponse.json();
+            setStudents(gradeData);
 
-        if (!gradeResponse.ok) {
-            console.error("Erro lançar notas:", gradeData);
-            return;
+            setShowGradeModal(false);
+            setGradeInput({});
+            setSelectedActivity("");
+
+        } catch (error) {
+            console.error("Erro lançar notas:", error.message);
         }
-
-        setStudents(gradeData);
-
-        setShowGradeModal(false);
-        setGradeInput({});
-        setSelectedActivity("");
     }
 
     function calcularMedia(student, atividades) {
