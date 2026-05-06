@@ -1,7 +1,7 @@
-import AppRoutes from "./routes"
+import AppRoutes from "./routes";
 import "./styles/table.css";
-import "./styles/institution.css"
-import "./styles/navbar.css"
+import "./styles/pages.css";
+import "./styles/navbar.css";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

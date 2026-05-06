@@ -152,7 +152,7 @@ function InstitutionPage() {
 
                 {/* HEADER */}
                 <div className="mb-5 text-center">
-                    <h1 className="display-4 fw-bold institution-title">
+                    <h1 className="display-4 fw-bold main-title">
                         {institution?.nome || "Carregando..."}
                     </h1>
                     <p className="text-muted fs-5">Gerencie suas turmas</p>
@@ -185,8 +185,8 @@ function InstitutionPage() {
                                         onClick={() => navigate(`/classes/${c._id}`)}
                                     >
                                         <div>
-                                            <strong>Matéria: {c.materia}</strong>
-                                            <div>{c.nomeTurma}</div>
+                                            <strong>Turma: {c.nomeTurma}</strong>
+                                            <div>Matéria: {c.materia}</div>
                                             <small>Turno: {c.turno}</small>
                                         </div>
 

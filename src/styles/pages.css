@@ -1,0 +1,10 @@
+.main-title {
+    font-family: "Titulo";
+    letter-spacing: 2px;
+}
+
+.class-panel {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e9ecef;
+}

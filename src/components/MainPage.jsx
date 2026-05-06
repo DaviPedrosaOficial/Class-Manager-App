@@ -42,17 +42,20 @@ function MainPage() {
 
     return (
         <Layout>
-            <div className="mb-4">
-                <h1 className="display-5">Instituições</h1>
+            <div className="mb-5 text-center">
+                <h1 className="display-4 fw-bold main-title">Instituições</h1>
                 <p className="text-muted">Selecione ou crie uma instituição</p>
             </div>
 
-            <button
-                className="btn btn-primary mb-4"
-                onClick={() => setShowModal(true)}
-            >
-                + Nova Instituição
-            </button>
+            <div className="d-flex justify-content-end mb-1">
+                <button
+                    className="btn btn-primary mb-2"
+                    onClick={() => setShowModal(true)}
+                >
+                    + Nova Instituição
+                </button>
+            </div>
+
 
             <div className="card">
                 <div className="card-body">

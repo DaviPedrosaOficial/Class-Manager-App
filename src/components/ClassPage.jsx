@@ -265,16 +265,24 @@ function ClassPage() {
 
         let somaMedia = 0;
         let abaixo = 0;
+        let alunosAvaliados = 0;
 
         processedStudents.forEach((student) => {
+
+            const temNotas = student.grades?.length > 0;
+
+            if (!temNotas) return;
+
+            alunosAvaliados++;
+
             somaMedia += student.media;
 
-            if (student.grades?.length > 0 && student.media < classData.mediaMinima) {
+            if (student.media < classData.mediaMinima) {
                 abaixo++;
             }
         });
 
-        const mediaGeral = somaMedia / processedStudents.length;
+        const mediaGeral = alunosAvaliados > 0 ? somaMedia / alunosAvaliados : 0;
 
         return {
             mediaGeral,
@@ -297,28 +305,60 @@ function ClassPage() {
     return (
         <Layout>
             <div className="container mt-4 mb-5">
-                <h2>Matéria: {classData.nome}</h2>
-                <p>Aqui você poderá gerenciar a turma.</p>
 
-                <button
-                    className="btn btn-primary mb-3 btn-sm"
-                    onClick={() => setShowModal(true)}
-                >
-                    + Adicionar Aluno
-                </button>
+                <div className="class-panel shadow-sm p-4 mb-4">
+                    <h1 className="display-5 fw-bold mb-2">
+                        {classData.nomeTurma}
+                    </h1>
 
-                <button
-                    className="btn btn-success mb-3 ms-2 btn-sm"
-                    onClick={() => setShowGradeModal(true)}
-                >
-                    + Lançar Notas
-                </button>
+                    <div className="text-muted small mb-2">
+                        {classData.materia} • {classData.turno}
+                    </div>
 
-                <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div className="d-flex gap-4 flex-wrap">
 
-                    <h4 className="mb-0">Alunos</h4>
+                        <div>
+                            <small className="text-muted">Alunos</small>
+                            <div className="fw-bold">{students.length}</div>
+                        </div>
 
-                    {/* Seção de busca & derivados */}
+                        <div>
+                            <small className="text-muted">Média mínima</small>
+                            <div className="fw-bold">{classData.mediaMinima}%</div>
+                        </div>
+
+                        <div>
+                            <small className="text-muted">Atividades</small>
+                            <div className="fw-bold">
+                                {classData.atividades.length}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
+
+                    {/* BOTÕES */}
+                    <div className="d-flex gap-2 flex-wrap">
+
+                        <button
+                            className="btn btn-primary btn-sm"
+                            onClick={() => setShowModal(true)}
+                        >
+                            + Adicionar Aluno
+                        </button>
+
+                        <button
+                            className="btn btn-success btn-sm"
+                            onClick={() => setShowGradeModal(true)}
+                        >
+                            + Lançar Notas
+                        </button>
+
+                    </div>
+
+                    {/* FILTROS */}
                     <div className="d-flex gap-2 align-items-center flex-wrap">
 
                         <input
@@ -353,6 +393,7 @@ function ClassPage() {
                         </select>
 
                     </div>
+
                 </div>
 
                 <p className="text-muted mb-2">
