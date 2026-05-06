@@ -151,20 +151,23 @@ function InstitutionPage() {
             <div className="container mt-4">
 
                 {/* HEADER */}
-                <div className="mb-4">
-                    <h1 className="display-5">
+                <div className="mb-5 text-center">
+                    <h1 className="display-4 fw-bold institution-title">
                         {institution?.nome || "Carregando..."}
                     </h1>
-                    <p className="text-muted">Gerencie suas turmas</p>
+                    <p className="text-muted fs-5">Gerencie suas turmas</p>
                 </div>
 
                 {/* BOTÃO */}
-                <button
-                    className="btn btn-primary mb-4"
-                    onClick={() => setShowModal(true)}
-                >
-                    + Nova Turma
-                </button>
+                <div className="d-flex justify-content-end mb-1">
+                    <button
+                        className="btn btn-primary mb-4"
+                        onClick={() => setShowModal(true)}
+                    >
+                        + Nova Turma
+                    </button>
+                </div>
+
 
                 {/* LISTA */}
                 <div className="card">
@@ -182,7 +185,7 @@ function InstitutionPage() {
                                         onClick={() => navigate(`/classes/${c._id}`)}
                                     >
                                         <div>
-                                            <strong>Materia: {c.materia}</strong>
+                                            <strong>Matéria: {c.materia}</strong>
                                             <div>{c.nomeTurma}</div>
                                             <small>Turno: {c.turno}</small>
                                         </div>

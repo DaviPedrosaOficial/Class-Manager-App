@@ -1,1 +1,9 @@
+@font-face {
+    font-family: "College";
+    src: url("./assets/fonts/college.ttf") format("truetype");
+}
 
+@font-face {
+    font-family: "Highcrest";
+    src: url("./assets/fonts/Highcrest.ttf") format("truetype");
+}

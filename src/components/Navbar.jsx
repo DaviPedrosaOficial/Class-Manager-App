@@ -6,20 +6,18 @@ function Navbar() {
     const navigate = useNavigate();
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <nav className="navbar navbar-dark bg-primary shadow-sm">
             <div className="container-fluid px-4">
-                <Link className="navbar-brand" to={token ? "/mainpage" : "/"}>ClassManager</Link>
 
-                <div className="collapse navbar-collapse">
-                    <ul className="navbar-nav ms-auto">
+                <Link className="navbar-brand navbar-title" to={token ? "/mainpage" : "/"}>ClassManager</Link>
+
+                <div className="d-flex ms-auto">
+                    <ul className="d-flex align-items-center gap-3 list-unstyled mb-0">
                         {token ? (
                             <>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/mainpage">Main page</Link>
-                                </li>
-                                <li className="nav-item">
                                     <button
-                                        className="nav-link btn btn-link text-white"
+                                        className="navbar-link navbar-button text-white"
                                         onClick={() => {
                                             localStorage.removeItem("token");
                                             navigate("/");
@@ -32,10 +30,10 @@ function Navbar() {
                         ) : (
                             <>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/">Entrar</Link>
+                                    <Link className="navbar-link text-white text-decoration-none fw-semibold" to="/">Entrar</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/register">Cadastrar</Link>
+                                    <Link className="navbar-link text-white text-decoration-none fw-semibold" to="/register">Cadastrar</Link>
                                 </li>
                             </>
                         )}
