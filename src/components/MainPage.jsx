@@ -123,7 +123,10 @@ function MainPage() {
                                     onClick={() => navigate(`/institutionpage/${inst._id}`)}
                                 >
                                     <div>
-                                        {inst.nome}
+                                        <strong>Instituição: {inst.nome}</strong>
+                                        <div>
+                                            <small>Unidade: {inst.matriz}</small>
+                                        </div>
                                     </div>
 
                                     <div className="d-flex gap-2">
@@ -194,7 +197,7 @@ function MainPage() {
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Nome da matriz da instituição. Ex.: Aimores ou Savassi"
+                                        placeholder="Nome da unidade(matriz). Ex.: Aimores ou Savassi"
                                         value={newMatriz}
                                         onChange={(e) =>
                                             setNewMatriz(e.target.value)
