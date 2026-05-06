@@ -104,7 +104,7 @@ function InstitutionPage() {
                 mediaMinima
             });
 
-            setClasses((prev) => prev.map((c) => c._id === updated._id ? updated : c));
+            setClasses((prev) => prev.map((c) => c._id === updated?._id ? updated : c));
 
             toast.success("Turma atualizada com sucesso!");
 

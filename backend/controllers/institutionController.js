@@ -15,9 +15,11 @@ export const getInstitution = async (req, res) => {
 export const createInstitution =  async (req, res) => {
     try {
         const { nome } = req.body;
+        const { matriz } = req.body;
 
         const institution = await Institution.create({
             nome,
+            matriz,
             userId: req.user.userId
         });
 
@@ -41,5 +43,39 @@ export const getInstitutionById = async (req, res) => {
         res.json(institution);
     } catch (error) {
         res.status(500).json({ message: `Erro ao buscar instituição. Error: ${error}` });
+    }
+};
+
+export const updateInstitution = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nome, matriz } = req.body;
+
+        const updated = await Institution.findByIdAndUpdate(
+            id,
+            { 
+                nome,
+                matriz 
+            },
+            { new: true }
+        );
+
+        res.json(updated);
+    
+    } catch (error) {
+        res.status(500).json({ message: `Erro ao atualizar a instituição. Erro: ${error}` });
+    }
+};
+
+export const deleteInstitution = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        await Institution.findByIdAndDelete(id);
+
+        res.json({ message: "Instituição deletada com sucesso!" })
+    
+    } catch (error) {
+        res.status(500).json({ message: `Erro ao deletar a instituição. Erro: ${error}` });
     }
 };

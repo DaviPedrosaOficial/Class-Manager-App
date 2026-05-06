@@ -76,10 +76,10 @@ export const deleteClass = async (req, res) => {
 
 export const updateClass = async (req, res) => {
     try {
-        const { Id } = req.params;
+        const { id } = req.params;
 
         const updated = await Class.findByIdAndUpdate(
-            Id,
+            id,
             req.body,
             { new: true }
         );
