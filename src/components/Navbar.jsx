@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
+    const location = useLocation();
 
     return (
         <nav className="navbar navbar-dark bg-primary shadow-sm">
@@ -19,11 +19,13 @@ function Navbar() {
                                     <button
                                         className="navbar-link navbar-button text-white"
                                         onClick={() => {
-                                            localStorage.removeItem("token");
-                                            navigate("/reports");
+                                            localStorage.getItem("token");
+                                            navigate(
+                                                location.pathname === "/reports" ? "/mainpage" : "/reports"
+                                            );
                                         }}
                                     >
-                                        Meus relatórios
+                                        {location.pathname === "/reports" ? "Minhas instituições" : "Meus relatórios"}
                                     </button>
                                 </li>
 
