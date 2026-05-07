@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import InstitutionPage from "../components/InstitutionPage";
-import ProtectedRoute from "../components/ProtectedRoutes";
+import ProtectedRoute from "../components/ProtectedRoute";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import ClassPage from "../components/ClassPage";
@@ -12,52 +12,38 @@ function AppRoutes() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <ProtectedRoutes >
-                            <Login />
-                        </ProtectedRoutes>
-                    }
-                />
-                <Route
-                    path="/register"
-                    element={
-                        <ProtectedRoutes >
-                            <Register />
-                        </ProtectedRoutes>
-                    }
-                />
+                <Route path="/" element={<Login />} />
+                <Route path="/register" element={<Register />} />
                 <Route
                     path="/mainpage"
                     element={
-                        <ProtectedRoutes >
+                        <ProtectedRoute >
                             <MainPage />
-                        </ProtectedRoutes>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/reports"
                     element={
-                        <ProtectedRoutes >
+                        <ProtectedRoute >
                             <Reports />
-                        </ProtectedRoutes>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/institutionpage/:id"
                     element={
-                        <ProtectedRoutes >
+                        <ProtectedRoute >
                             <InstitutionPage />
-                        </ProtectedRoutes>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/classes/:id"
                     element={
-                        <ProtectedRoutes >
+                        <ProtectedRoute >
                             <ClassPage />
-                        </ProtectedRoutes>
+                        </ProtectedRoute>
                     }
                 />
             </Routes>
