@@ -20,6 +20,18 @@ function Navbar() {
                                         className="navbar-link navbar-button text-white"
                                         onClick={() => {
                                             localStorage.removeItem("token");
+                                            navigate("/reports");
+                                        }}
+                                    >
+                                        Meus relatórios
+                                    </button>
+                                </li>
+
+                                <li className="nav-item">
+                                    <button
+                                        className="navbar-link navbar-button text-white"
+                                        onClick={() => {
+                                            localStorage.removeItem("token");
                                             navigate("/");
                                         }}
                                     >

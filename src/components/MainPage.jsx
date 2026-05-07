@@ -94,8 +94,8 @@ function MainPage() {
     return (
         <Layout>
             <div className="mb-5 text-center">
-                <h1 className="display-4 fw-bold main-title">Instituições</h1>
-                <p className="text-muted">Selecione ou crie uma instituição</p>
+                <h1 className="display-4 fw-bold main-title">Suas instituições</h1>
+                <p className="text-muted">Crie, edite e acompanhe suas instituição</p>
             </div>
 
             <div className="d-flex justify-content-end mb-1">
@@ -108,7 +108,7 @@ function MainPage() {
             </div>
 
 
-            <div className="card">
+            <div className="card mb-5">
                 <div className="card-body">
 
                     {institutions.length === 0 ? (
