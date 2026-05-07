@@ -16,17 +16,21 @@ function Navbar() {
                         {token ? (
                             <>
                                 <li className="nav-item">
-                                    <button
-                                        className="navbar-link navbar-button text-white"
-                                        onClick={() => {
-                                            localStorage.getItem("token");
-                                            navigate(
-                                                location.pathname === "/reports" ? "/mainpage" : "/reports"
-                                            );
-                                        }}
+                                    <Link
+                                        className={`navbar-link text-white text-decoration-none fw-semibold ${location.pathname === "/mainpage" ? "active-link" : ""}`}
+                                        to="/mainpage"
                                     >
-                                        {location.pathname === "/reports" ? "Minhas instituições" : "Meus relatórios"}
-                                    </button>
+                                        Instituições
+                                    </Link>
+                                </li>
+
+                                <li className="nav-item">
+                                    <Link
+                                        className={`navbar-link text-white text-decoration-none fw-semibold ${location.pathname === "/reports" ? "active-link" : ""}`}
+                                        to="/reports"
+                                    >
+                                        Relatórios
+                                    </Link>
                                 </li>
 
                                 <li className="nav-item">

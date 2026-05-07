@@ -33,6 +33,10 @@ export const createStudent = async (req, res) => {
             grades: []
         });
 
+        classData.students.push(newStudent._id);
+
+        await classData.save();
+
         res.status(201).json(newStudent);
 
     } catch (error) {

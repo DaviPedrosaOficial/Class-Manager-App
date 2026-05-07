@@ -1,5 +1,18 @@
 import Class from "../models/Class.js";
 
+export const getAllClasses = async (req, res) => {
+    try{
+        const classes = await Class.find({
+            userId: req.user.userId
+        }).populate("students");
+
+        res.json(classes);
+    
+    } catch (error) {
+        res.status(500).json({ message: "Erro ao buscar turmas"});
+    }
+}
+
 export const getClasses = async (req, res) => {
     try {
         const classes = await Class.find({ 

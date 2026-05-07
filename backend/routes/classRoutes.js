@@ -1,5 +1,5 @@
 import express from "express";
-import { getClasses, createClass, getClassById, deleteClass, updateClass } from "../controllers/classController.js";
+import { getAllClasses, getClasses, createClass, getClassById, deleteClass, updateClass } from "../controllers/classController.js";
 
 import { getStudentsByClassId, createStudent, updateStudentGrades, updateStudent, deleteStudent } from "../controllers/studentController.js";
 
@@ -8,6 +8,7 @@ import { authMiddleware } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 // Rotas das Turmas
+router.get("/", authMiddleware, getAllClasses);
 router.get("/:id", authMiddleware, getClassById);
 router.post("/", authMiddleware, createClass);
 router.delete("/:id", authMiddleware, deleteClass);
