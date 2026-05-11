@@ -210,8 +210,7 @@ mongod
 
 ## 💡 Melhorias Futuras
 
-- 📊 Relatórios por instituição
-- 📚 Relatórios por matéria (visão global entre turmas)
+- 📊 Inserir notificações para matérias e instituições que estão abaixo da média
 - 📈 Análise de desempenho mais avançada
 - 🎨 Melhorias de UX/UI (feedback visual, animações, experiência do usuário)
 
