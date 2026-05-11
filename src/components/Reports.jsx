@@ -9,6 +9,8 @@ function Reports() {
     const [average, setAverage] = useState();
     const [studentsAtRisk, setStudentsAtRisk] = useState();
 
+    const [institutionReports, setInstitutionReports] = useState({});
+
     useEffect(() => {
 
         async function fetchData() {
@@ -62,6 +64,68 @@ function Reports() {
                     alunosRisco: 0
                 })
 
+                const institutionReports = {};
+
+                data.forEach((currentClass) => {
+
+                    const institutionName =
+                        currentClass.institutionId?.nome || "Instituição";
+
+                    // cria instituição se não existir
+                    if (!institutionReports[institutionName]) {
+
+                        institutionReports[institutionName] = {
+                            totalMedia: 0,
+                            totalAlunos: 0,
+                            alunosRisco: 0,
+                            turmas: 0,
+                            mediaMinima: currentClass.mediaMinima
+                        };
+                    }
+
+                    institutionReports[institutionName].turmas++;
+
+                    currentClass.students.forEach((student) => {
+
+                        if (!student.grades?.length) return;
+
+                        const somaNotas = student.grades.reduce(
+                            (acc, grade) => acc + grade.nota,
+                            0
+                        );
+
+                        const somaPesos = student.grades.reduce(
+                            (acc, grade) => {
+
+                                const atividade =
+                                    currentClass.atividades.find(
+                                        (atividade) =>
+                                            atividade._id.toString() ===
+                                            grade.atividadeId.toString()
+                                    );
+
+                                return acc + (atividade?.peso || 0);
+
+                            },
+                            0
+                        );
+
+                        const mediaAluno =
+                            somaPesos > 0
+                                ? (somaNotas / somaPesos) * 100
+                                : 0;
+
+                        institutionReports[institutionName].totalMedia += mediaAluno;
+
+                        institutionReports[institutionName].totalAlunos++;
+
+                        if (mediaAluno < currentClass.mediaMinima) {
+
+                            institutionReports[institutionName].alunosRisco++;
+                        }
+                    });
+                });
+
                 report.totalMedia;
                 report.totalAlunos;
                 report.alunosRisco;
@@ -72,6 +136,7 @@ function Reports() {
                 setClasses(data);
                 setAverage(mediaGeral);
                 setStudentsAtRisk(alunosEmRisco);
+                setInstitutionReports(institutionReports);
 
 
             } catch (error) {
@@ -160,33 +225,70 @@ function Reports() {
 
                     <div className="row g-4">
 
-                        <div className="col-md-6">
+                        {
+                            Object.entries(institutionReports).map(
+                                ([institutionName, report]) => {
 
-                            <div className="card shadow-sm border-0 h-100">
+                                    const media =
+                                        report.totalAlunos > 0
+                                            ? report.totalMedia / report.totalAlunos
+                                            : 0;
 
-                                <div className="card-body">
+                                    const mediaColor =
+                                        media >= report.mediaMinima
+                                            ? "text-success"
+                                            : "text-danger";
 
-                                    <h4 className="fw-bold mb-3">
-                                        Instituição X
-                                    </h4>
+                                    const riskColor =
+                                        report.alunosRisco === 0
+                                            ? "text-success"
+                                            : "text-danger";
 
-                                    <p className="mb-2">
-                                        <strong>Média Geral:</strong> 74%
-                                    </p>
+                                    return (
 
-                                    <p className="mb-2">
-                                        <strong>Turmas:</strong> 5
-                                    </p>
+                                        <div
+                                            className="col-md-6"
+                                            key={institutionName}
+                                        >
 
-                                    <p className="mb-0">
-                                        <strong>Alunos em risco:</strong> 12
-                                    </p>
+                                            <div className="card shadow-sm border-0 h-100">
 
-                                </div>
+                                                <div className="card-body">
 
-                            </div>
+                                                    <h4 className="fw-bold mb-3">
+                                                        {institutionName}
+                                                    </h4>
 
-                        </div>
+                                                    <p className="mb-2">
+                                                        <strong>Média Geral:</strong>{" "}
+
+                                                        <span className={mediaColor}>
+                                                            {media.toFixed(1)}%
+                                                        </span>
+                                                    </p>
+
+                                                    <p className="mb-2">
+                                                        <strong>Turmas:</strong>{" "}
+                                                        {report.turmas}
+                                                    </p>
+
+                                                    <p className="mb-0">
+                                                        <strong>Alunos em risco:</strong>{" "}
+
+                                                        <span className={riskColor}>
+                                                            {report.alunosRisco}
+                                                        </span>
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    );
+                                }
+                            )
+                        }
 
                     </div>
 

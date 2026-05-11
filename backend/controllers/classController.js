@@ -4,7 +4,8 @@ export const getAllClasses = async (req, res) => {
     try{
         const classes = await Class.find({
             userId: req.user.userId
-        }).populate("students");
+        }).populate("students")
+        .populate("institutionId");
 
         res.json(classes);
     
