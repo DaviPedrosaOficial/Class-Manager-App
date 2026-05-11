@@ -226,3 +226,43 @@ Davi Pedrosa
 ## 📄 Licença
 
 MIT
+
+## 📸 Preview do Projeto
+
+### 🔐 Telas de Login e Cadastro
+
+![Login](./src/assets/images/login.png)
+
+![Cadastro](./src/assets/images/register.png)
+
+---
+
+### 🏫 Página de Instituições
+
+![Instituições](./src/assets/images/institutionPage.png)
+
+![NovaInstituição](./src/assets/images/newInstitution.png)
+
+---
+
+### 📚 Hub de turmas das instituições
+
+![HubTurmas](./src/assets/images/classHub.png)
+
+![NovaTurma](./src/assets/images/newClass.png)
+
+---
+
+### 📚 Página da Turma
+
+![Turma](./src/assets/images/classPage.png)
+
+![NovoAluno](./src/assets/images/newStudent.png)
+
+![InserindoNotas](./src/assets/images/launchGrade.png)
+
+---
+
+### 📊 Página de Relatórios
+
+![Relatórios](./src/assets/images/myReports.png)
