@@ -10,6 +10,7 @@ function Reports() {
     const [studentsAtRisk, setStudentsAtRisk] = useState();
 
     const [institutionReports, setInstitutionReports] = useState({});
+    const [subjectReports, setSubjectReports] = useState({});
 
     useEffect(() => {
 
@@ -126,6 +127,70 @@ function Reports() {
                     });
                 });
 
+                const subjectReports = {};
+
+                data.forEach((currentClass) => {
+
+                    const subjectName =
+                        currentClass.materia || "Matéria";
+
+                    if (!subjectReports[subjectName]) {
+
+                        subjectReports[subjectName] = {
+                            totalMedia: 0,
+                            totalAlunos: 0,
+                            alunosRisco: new Set(),
+                            turmas: 0,
+                            mediaMinima: currentClass.mediaMinima
+                        };
+                    }
+
+                    subjectReports[subjectName].turmas++;
+
+                    currentClass.students.forEach((student) => {
+
+                        if (!student.grades?.length) return;
+
+                        const somaNotas = student.grades.reduce(
+                            (acc, grade) => acc + grade.nota,
+                            0
+                        );
+
+                        const somaPesos = student.grades.reduce(
+                            (acc, grade) => {
+
+                                const atividade =
+                                    currentClass.atividades.find(
+                                        (atividade) =>
+                                            atividade._id.toString() ===
+                                            grade.atividadeId.toString()
+                                    );
+
+                                return acc + (atividade?.peso || 0);
+
+                            },
+                            0
+                        );
+
+                        const mediaAluno =
+                            somaPesos > 0
+                                ? (somaNotas / somaPesos) * 100
+                                : 0;
+
+                        subjectReports[subjectName].totalMedia += mediaAluno;
+
+                        subjectReports[subjectName].totalAlunos++;
+
+                        if (
+                            mediaAluno <
+                            currentClass.mediaMinima
+                        ) {
+
+                            subjectReports[subjectName].alunosRisco.add(student._id.toString());
+                        }
+                    });
+                });
+
                 report.totalMedia;
                 report.totalAlunos;
                 report.alunosRisco;
@@ -137,7 +202,7 @@ function Reports() {
                 setAverage(mediaGeral);
                 setStudentsAtRisk(alunosEmRisco);
                 setInstitutionReports(institutionReports);
-
+                setSubjectReports(subjectReports);
 
             } catch (error) {
                 toast.error("Erro ao buscar os dados!");
@@ -303,33 +368,84 @@ function Reports() {
 
                     <div className="row g-4">
 
-                        <div className="col-md-6">
+                        {
+                            Object.entries(subjectReports).map(
+                                ([subjectName, report]) => {
 
-                            <div className="card shadow-sm border-0 h-100">
+                                    const media =
+                                        report.totalAlunos > 0
+                                            ? report.totalMedia / report.totalAlunos
+                                            : 0;
 
-                                <div className="card-body">
+                                    const mediaColor =
+                                        media >= report.mediaMinima
+                                            ? "text-success"
+                                            : "text-danger";
 
-                                    <h4 className="fw-bold mb-3">
-                                        Cálculo
-                                    </h4>
+                                    const riskColor =
+                                        report.alunosRisco.size === 0
+                                            ? "text-success"
+                                            : "text-danger";
 
-                                    <p className="mb-2">
-                                        <strong>Média Geral:</strong> 61%
-                                    </p>
+                                    const desempenho =
+                                        media >= 80
+                                            ? "Excelente"
+                                            : media >= 70
+                                                ? "Bom"
+                                                : media >= 60
+                                                    ? "Regular"
+                                                    : "Crítico";
 
-                                    <p className="mb-2">
-                                        <strong>Reprovação:</strong> 18%
-                                    </p>
+                                    return (
 
-                                    <p className="mb-0">
-                                        <strong>Desempenho:</strong> Regular
-                                    </p>
+                                        <div
+                                            className="col-md-6"
+                                            key={subjectName}
+                                        >
 
-                                </div>
+                                            <div className="card shadow-sm border-0 h-100">
 
-                            </div>
+                                                <div className="card-body">
 
-                        </div>
+                                                    <h4 className="fw-bold mb-3">
+                                                        {subjectName}
+                                                    </h4>
+
+                                                    <p className="mb-2">
+                                                        <strong>Média Geral:</strong>{" "}
+
+                                                        <span className={mediaColor}>
+                                                            {media.toFixed(1)}%
+                                                        </span>
+                                                    </p>
+
+                                                    <p className="mb-2">
+                                                        <strong>Turmas:</strong>{" "}
+                                                        {report.turmas}
+                                                    </p>
+
+                                                    <p className="mb-2">
+                                                        <strong>Alunos em risco:</strong>{" "}
+
+                                                        <span className={riskColor}>
+                                                            {report.alunosRisco.size}
+                                                        </span>
+                                                    </p>
+
+                                                    <p className="mb-0">
+                                                        <strong>Desempenho:</strong>{" "}
+                                                        {desempenho}
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    );
+                                }
+                            )
+                        }
 
                     </div>
 
